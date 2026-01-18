@@ -9,11 +9,12 @@ using UnityEngine.XR.Interaction.Toolkit.Inputs;
 public class ObjectSpawner : MonoBehaviour
 {
     public GameObject prefabToSpawn;
+    public InputActionProperty spawnButton;
 
     // Update is called once per frame
     void Update()
     {
-       if (OVRInput.Get(OVRInput.RawButton.RIndexTrigger))
+       if (spawnButton.action.IsPressed())
        {
             SpawnObject();
        }
