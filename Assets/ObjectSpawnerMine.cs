@@ -4,34 +4,53 @@ using UnityEngine;
 using UnityEngine.InputSystem;
 using UnityEngine.XR.Interaction.Toolkit;
 using UnityEngine.XR.Interaction.Toolkit.Inputs;
+using UnityEngine.XR.Interaction.Toolkit.Interactors;
 
 
 public class ObjectSpawner : MonoBehaviour
 {
+    [Tooltip("Prefab to spawn.")]
     public GameObject prefabToSpawn;
+
+    [Tooltip("Input Action configured for spawn (e.g. trigger).")]
     public InputActionProperty spawnButton;
 
-    // Update is called once per frame
+    [SerializeField]
+    [Tooltip("Assign the XR interactor (XRDirectInteractor, XRRayInteractor, etc.) from your rig. The interactor's attachTransform or transform will be used for spawn pose.")]
+    XRBaseInteractor controllerInteractor;
+
     void Update()
     {
-       if (spawnButton.action.IsPressed())
-       {
+        var action = spawnButton.action;
+        if (action != null && action.WasReleasedThisFrame())
+        {
             SpawnObject();
-       }
+        }
     }
 
     public void SpawnObject()
     {
-        GameObject furniture = Instantiate(prefabToSpawn, OVRInput.GetLocalControllerPosition(OVRInput.Controller.RTouch), OVRInput.GetLocalControllerRotation(OVRInput.Controller.RTouch));
-        if (furniture != null)
+        if (prefabToSpawn == null)
         {
-            Vector3 spawnPosition = transform.position + transform.forward * 0.5f; // Spawn 0.5 units in front of the spawner
-            Quaternion spawnRotation = Quaternion.identity; // No rotation
-            Instantiate(prefabToSpawn, spawnPosition, spawnRotation);
+            Debug.LogWarning("Prefab to spawn is not assigned.");
+            return;
+        }
+
+        Transform poseTransform = null;
+        if (controllerInteractor != null)
+        {
+            poseTransform = controllerInteractor.attachTransform != null
+                ? controllerInteractor.attachTransform : controllerInteractor.transform;
         }
         else
         {
-            Debug.LogError("Prefab not found in Resources folder!");
-}
+            poseTransform = transform; //fallback
+        }
+
+        var spawnPos = poseTransform.position + poseTransform.forward * 0.5f;
+        var spawnRot = poseTransform.rotation;
+
+        Instantiate(prefabToSpawn, spawnPos, spawnRot);
+
     }
 }
