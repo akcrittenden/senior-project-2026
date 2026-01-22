@@ -3,7 +3,6 @@ using System.IO;
 using Unity.XR.CoreUtils;
 using UnityEngine;
 using UnityEngine.InputSystem;
-using UnityEngine.XR.OpenXR.Input;
 
 public class SaveAndLoad : MonoBehaviour
 {
@@ -17,26 +16,39 @@ public class SaveAndLoad : MonoBehaviour
 
     private XROrigin xrOrigin;
 
+    //not recommended: public InputAction lets you directly bind a key to this action, but this means I can't use the binding mapping we configured in the Default Input Action asset
+    // and also I think you can't call this in code?
     public InputActionReference aButton;
-    public InputActionReference bButton;
+    public InputActionReference bButton; // reference lets you bind an action from the Default Input Action Asset in the inspector
+    // public InputActionProperty lets you EITHER bind a key directly OR use a reference to the Default Input Action asset (pick with three dots)
+
 
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
         xrOrigin = FindFirstObjectByType<XROrigin>();
-        aButton.action.performed += AButton;
+
+        // next, determine when action will be triggered.
+        // in input system, timing is deternmined through event mechanism. when system detects input bound to action has occured, action is triggered and event provided by input
+        // System is invoked. We can bind our custom methods to this event so when system detects action being triggered, it will execute method we have bound to that event
+        // aButton.action.performed is the event that is invoked when the action is performed (button pressed)
+        aButton.action.performed += AButton; // capital AButton is the name of the mapping in the Default Input Action asset
         bButton.action.performed += BButton;
+    }
+
+
+    private void AButton(InputAction.CallbackContext callback)
+    {
+        Debug.Log("A button pressed - from event");
+        SaveData();
     }
 
     private void BButton(InputAction.CallbackContext callback)
     {
         Debug.Log("B button pressed - from event");
+        LoadData();
     }
 
-    private void AButton(InputAction.CallbackContext callback)
-    {
-        Debug.Log("A button pressed - from event");
-    }
 
     void Update()
     {
@@ -66,7 +78,8 @@ public class SaveAndLoad : MonoBehaviour
     {
         SaveDataModel model = JsonUtility.FromJson<SaveDataModel>(File.ReadAllText(Application.persistentDataPath + "/savefile.json"));
         Debug.Log("Data Loaded");
-        Debug.Log($"Last position: {model.playerPosition}");
+        Debug.Log($"Moving player to saved position: {model.playerPosition}");
+        xrOrigin.transform.position = model.playerPosition;
     }
 
 }
