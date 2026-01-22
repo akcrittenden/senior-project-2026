@@ -26,7 +26,7 @@ public class ObjectSpawner : MonoBehaviour
 
     [SerializeField]
     [Tooltip("List of furniture prefabs that can be spawned")]
-    private List<FurnitureEntry> furnitureEntries = new List<FurnitureEntry>();
+    public List<FurnitureEntry> furnitureEntries = new List<FurnitureEntry>();
 
     [Tooltip("If >=0 and within range, this index will be used to spawn that specific furniture prefab.")]
     [SerializeField]
