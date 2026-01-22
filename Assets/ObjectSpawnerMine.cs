@@ -22,6 +22,8 @@ public class ObjectSpawner : MonoBehaviour
         public List<XRBaseInteractable> instances = new List<XRBaseInteractable>();
     }
 
+    private InputActionMap xriActionMap;
+
     [SerializeField]
     [Tooltip("List of furniture prefabs that can be spawned")]
     private List<FurnitureEntry> furnitureEntries = new List<FurnitureEntry>();
@@ -50,11 +52,11 @@ public class ObjectSpawner : MonoBehaviour
             return list;
         }
     }
-
     void Update()
     {
         var spawnAction = spawnButton.action;
         var gripAction = gripButton.action;
+        
 
         if (spawnAction == null)
             return;
