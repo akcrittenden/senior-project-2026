@@ -1,19 +1,12 @@
-using System;
-using System.Net.NetworkInformation;
-using System.Runtime.CompilerServices;
-using Unity.VisualScripting;
 using UnityEngine;
-using UnityEngine.EventSystems;
 using UnityEngine.InputSystem;
 using UnityEngine.XR.Interaction.Toolkit;
 using UnityEngine.XR.Interaction.Toolkit.Interactables;
 using UnityEngine.XR.Interaction.Toolkit.Interactors;
-using UnityEngine.XR.Interaction.Toolkit.UI;
-using static UnityEngine.Rendering.GPUSort;
+
 
 public class DeleteAndDupe : MonoBehaviour
 {
-
     [SerializeField] private XRRayInteractor rayInteractor;
     private ObjectSpawner objectSpawner;
     public GameObject objectAtRay;
@@ -29,7 +22,6 @@ public class DeleteAndDupe : MonoBehaviour
 
         xButton.action.performed += XButton;
         yButton.action.performed += YButton;
-
     }
 
     private void OnHoverEntered(HoverEnterEventArgs args)
@@ -40,23 +32,50 @@ public class DeleteAndDupe : MonoBehaviour
         Debug.Log($"Hovered over: {objectAtRay.GetInstanceID()}");
     }
 
-    void DeleteObject()
-    {
-        // get gameobject from ray interactor
-        // remove object from list of furnitureEntries in ObjectSpawner script
-        // destroy that gameobject
-    }
-
     private void YButton(InputAction.CallbackContext callback)
     {
         Debug.Log("Y button pressed - from event");
-        //DeleteObject();
+        DeleteObject();
     }
 
     private void XButton(InputAction.CallbackContext callback)
     {
         Debug.Log("X button pressed - from event");
         DuplicateObject();
+    }
+
+    void DeleteObject()
+    {
+        // get gameobject from ray interactor
+        Debug.Log("Deleting Object...");
+        GameObject objectToDelete = objectAtRay;
+        // remove object from list of furnitureEntries in ObjectSpawner script
+        if (objectToDelete != null)
+        {
+            var interactableToRemove = objectToDelete.GetComponent<XRBaseInteractable>();
+            if (interactableToRemove != null && objectSpawner != null)
+            {
+                //find and remove from furnitureEntries
+                foreach(var furnitureEntry in objectSpawner.furnitureEntries)
+                {
+                    if (furnitureEntry.instances.Contains(interactableToRemove))
+                    {
+                        furnitureEntry.instances.Remove(interactableToRemove);
+                        Debug.Log($"Removed object {objectToDelete.GetInstanceID()} from furniture entry.");
+                        break;
+                    }
+                }
+            }
+
+            // Destroy the object from the scene
+            Destroy(objectToDelete);
+            Debug.Log($"Destroyed object: {objectToDelete.GetInstanceID()}");
+            objectAtRay = null;
+        }
+        else
+        {
+            Debug.LogWarning("No object to delete.");
+        }
     }
 
     private void DuplicateObject()
