@@ -22,8 +22,6 @@ public class ObjectSpawner : MonoBehaviour
         public List<XRBaseInteractable> instances = new List<XRBaseInteractable>();
     }
 
-    private InputActionMap xriActionMap;
-
     [SerializeField]
     [Tooltip("List of furniture prefabs that can be spawned")]
     public List<FurnitureEntry> furnitureEntries = new List<FurnitureEntry>();

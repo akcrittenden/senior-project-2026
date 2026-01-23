@@ -56,7 +56,7 @@ public class DeleteAndDupe : MonoBehaviour
     private void XButton(InputAction.CallbackContext callback)
     {
         Debug.Log("X button pressed - from event");
-        //DuplicateObject();
+        DuplicateObject();
     }
 
     private void DuplicateObject()
@@ -69,7 +69,7 @@ public class DeleteAndDupe : MonoBehaviour
             //get position of hovered object
             Vector3 hoverPosition = objectAtRay.transform.position;
             // set spawn position of new object to be slightly offset from hovered object
-            Vector3 spawnPosition = hoverPosition + new Vector3(2f, 0, 0);
+            Vector3 spawnPosition = hoverPosition + new Vector3(1f, 0, 0);
             // instantiate new object
             duplicatedObject = Instantiate(objectAtRay, spawnPosition, objectAtRay.transform.rotation);
 
