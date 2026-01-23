@@ -1277,6 +1277,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6a6c7c29601caa247a207844b95a7bd1, type: 3}
   m_Name: 
   m_EditorClassIdentifier: '::'
+  objectSpawner: {fileID: 0}
   aButton: {fileID: 592743189140872149, guid: c348712bda248c246b8c49b3db54643f, type: 3}
   bButton: {fileID: -2099839017146583789, guid: c348712bda248c246b8c49b3db54643f, type: 3}
 --- !u!4 &1680181603
@@ -1612,6 +1613,53 @@ MonoBehaviour:
   m_ShadowLayerMask: 1
   m_RenderingLayers: 1
   m_ShadowRenderingLayers: 1
+--- !u!1 &1852360803
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1852360805}
+  - component: {fileID: 1852360804}
+  m_Layer: 0
+  m_Name: DeleteAndDupe
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!114 &1852360804
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1852360803}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 059c36cb8865f83489faad63d7536cb7, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: '::'
+  rayInteractor: {fileID: 2118756120}
+  xButton: {fileID: 9093199614201357312, guid: c348712bda248c246b8c49b3db54643f, type: 3}
+  yButton: {fileID: 6082964535758207469, guid: c348712bda248c246b8c49b3db54643f, type: 3}
+--- !u!4 &1852360805
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1852360803}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 2.85386, y: 0, z: 5.37262}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1925925945 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 1767192433, guid: f6336ac4ac8b4d34bc5072418cdc62a0, type: 3}
@@ -1829,6 +1877,17 @@ Transform:
   m_CorrespondingSourceObject: {fileID: 5888765399538998960, guid: ad818c36731146e994540a1896ad8f24, type: 3}
   m_PrefabInstance: {fileID: 1144425046}
   m_PrefabAsset: {fileID: 0}
+--- !u!114 &2118756120 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 7462879561657043759, guid: ad818c36731146e994540a1896ad8f24, type: 3}
+  m_PrefabInstance: {fileID: 1144425046}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6803edce0201f574f923fd9d10e5b30a, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1660057539 &9223372036854775807
 SceneRoots:
   m_ObjectHideFlags: 0
@@ -1838,3 +1897,4 @@ SceneRoots:
   - {fileID: 102427672}
   - {fileID: 1204685359}
   - {fileID: 1680181603}
+  - {fileID: 1852360805}

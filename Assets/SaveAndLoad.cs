@@ -77,12 +77,6 @@ public class SaveAndLoad : MonoBehaviour
     {
         // For demonstration, we print the loaded data every frame
         //Debug.Log($"Player Position: {xrOrigin.transform.position}");
-        
-        // if press A, SaveData();
- 
-
-        // if press B, LoadData();
-
 
     }
     void SaveData()
