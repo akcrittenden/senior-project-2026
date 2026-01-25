@@ -1,0 +1,6 @@
+<ui:UXML xmlns:ui="UnityEngine.UIElements" xmlns:uie="UnityEditor.UIElements" editor-extension-mode="False">
+    <ui:VisualElement style="flex-grow: 1; flex-direction: column; align-self: stretch; background-color: rgba(0, 0, 118, 0.51); justify-content: center;">
+        <ui:Button text="Save Layout" selectable="false" focusable="false" style="height: 65px;" />
+        <ui:Button text="Load Layout" />
+    </ui:VisualElement>
+</ui:UXML>
