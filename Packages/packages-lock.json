@@ -90,7 +90,7 @@
     },
     "com.meta.xr.simulator": {
       "version": "81.0.0",
-      "depth": 0,
+      "depth": 1,
       "source": "registry",
       "dependencies": {},
       "url": "https://packages.unity.com"
