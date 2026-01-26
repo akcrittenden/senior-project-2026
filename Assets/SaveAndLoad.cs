@@ -21,7 +21,6 @@ public class SaveAndLoad : MonoBehaviour
     {
         public string playerName = "Gage";
         public float health = 69.0f;
-        public Vector3 playerPosition;
         public List<FurnitureData> furnitureInstances = new List<FurnitureData>();
     }
 
@@ -84,7 +83,7 @@ public class SaveAndLoad : MonoBehaviour
         SaveDataModel model = new SaveDataModel();
         model.playerName = "Amanda";
         model.health = 100.0f;
-        model.playerPosition = xrOrigin.transform.position;
+        //model.playerPosition = xrOrigin.transform.position;
 
         //save all furniture
         if (objectSpawner != null)
@@ -113,8 +112,6 @@ public class SaveAndLoad : MonoBehaviour
     {
         SaveDataModel model = JsonUtility.FromJson<SaveDataModel>(File.ReadAllText(Application.persistentDataPath + "/savefile.json"));
         Debug.Log("Data Loaded");
-        Debug.Log($"Moving player to saved position: {model.playerPosition}");
-        //xrOrigin.transform.position = model.playerPosition;
 
         // delete current furniture first
         if (objectSpawner != null)

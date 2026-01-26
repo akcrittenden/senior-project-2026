@@ -38,7 +38,8 @@ public class ObjectSpawner : MonoBehaviour
 
     [SerializeField]
     [Tooltip("Assign the XR interactor (XRDirectInteractor, XRRayInteractor, etc.) from your rig. The interactor's attachTransform or transform will be used for spawn pose.")]
-    private XRBaseInteractor controllerInteractor;
+    // private XRBaseInteractor controllerInteractor;
+    private XRRayInteractor controllerInteractor;
 
     public IReadOnlyList<GameObject> FurniturePrefabs
     {
@@ -59,60 +60,61 @@ public class ObjectSpawner : MonoBehaviour
         if (spawnAction == null)
             return;
 
-        // Don't spawn if grip button is held down while trigger is pressed
-        if (gripAction != null && gripAction.IsPressed())
-            return;
-
         if (spawnAction.WasReleasedThisFrame())
         {
-            SpawnObject();
+            if (!gripAction.IsPressed())
+                SpawnObject();
         }
     }
 
     public void SpawnObject()
     {
-        if (furnitureEntries == null || furnitureEntries.Count == 0)
-        {
-            Debug.LogWarning("No furniture prefabs assigned to spawn.");
-            return;
-        }
+            if (controllerInteractor && !controllerInteractor.IsOverUIGameObject())
+            {
 
-        FurnitureEntry entryToSpawn;
-        if (spawnOptionIndex >= 0 && spawnOptionIndex < furnitureEntries.Count)
-        {
-            entryToSpawn = furnitureEntries[spawnOptionIndex];
-        }
-        else
-        {
-            entryToSpawn = furnitureEntries[Random.Range(0, furnitureEntries.Count)];
-        }
-        if (entryToSpawn == null)
-        {
-            Debug.LogWarning("Selected furniture prefab is null.");
-            return;
-        }
+                if (furnitureEntries == null || furnitureEntries.Count == 0)
+                {
+                    Debug.LogWarning("No furniture prefabs assigned to spawn.");
+                    return;
+                }
 
-        Transform poseTransform = null;
-        if (controllerInteractor != null)
-        {
-            poseTransform = controllerInteractor.attachTransform != null
-                ? controllerInteractor.attachTransform : controllerInteractor.transform;
-        }
-        else
-        {
-            poseTransform = transform; //fallback
-        }
+                FurnitureEntry entryToSpawn;
+                if (spawnOptionIndex >= 0 && spawnOptionIndex < furnitureEntries.Count)
+                {
+                    entryToSpawn = furnitureEntries[spawnOptionIndex];
+                }
+                else
+                {
+                    entryToSpawn = furnitureEntries[Random.Range(0, furnitureEntries.Count)];
+                }
+                if (entryToSpawn == null)
+                {
+                    Debug.LogWarning("Selected furniture prefab is null.");
+                    return;
+                }
 
-        var spawnPos = poseTransform.position + poseTransform.forward * 1.5f;
-        var spawnRot = poseTransform.rotation;
+                Transform poseTransform = null;
+                if (controllerInteractor != null)
+                {
+                    poseTransform = controllerInteractor.attachTransform != null
+                        ? controllerInteractor.attachTransform : controllerInteractor.transform;
+                }
+                else
+                {
+                    poseTransform = transform; //fallback
+                }
 
-        var instance = Instantiate(entryToSpawn.prefab, spawnPos, spawnRot);
+                var spawnPos = poseTransform.position + poseTransform.forward * 1.5f;
+                var spawnRot = poseTransform.rotation;
 
-        var interactable = instance.GetComponent<XRBaseInteractable>();
-        if (interactable != null)
-        {
-            entryToSpawn.instances.Add(interactable);
-        }
+                var instance = Instantiate(entryToSpawn.prefab, spawnPos, spawnRot);
 
-    }
+                var interactable = instance.GetComponent<XRBaseInteractable>();
+                if (interactable != null)
+                {
+                    entryToSpawn.instances.Add(interactable);
+                }
+            }
+        } 
+    
 }
