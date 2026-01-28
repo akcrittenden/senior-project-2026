@@ -1,0 +1,12 @@
+<ui:UXML xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:ui="UnityEngine.UIElements" xmlns:uie="UnityEditor.UIElements" noNamespaceSchemaLocation="../UIElementsSchema/UIElements.xsd" editor-extension-mode="False">
+    <Style src="project://database/Assets/buttonstyler.uss?fileID=7433441132597879392&amp;guid=c57628ae328aad14fb3868c7e1e251fe&amp;type=3#buttonstyler" />
+    <ui:VisualElement name="VisualElement" style="flex-grow: 1; background-color: rgba(255, 255, 255, 0.18); -unity-background-image-tint-color: rgba(255, 255, 255, 0); color: rgb(0, 0, 0); border-top-left-radius: 34px; border-top-right-radius: 34px; border-bottom-right-radius: 34px; border-bottom-left-radius: 34px;">
+        <ui:Label text="Save and Load" style="height: 74px; font-size: 31px; -unity-font-style: bold; -unity-text-align: upper-center; margin-top: 24px; margin-bottom: -3px; justify-content: flex-start; background-color: rgba(0, 0, 0, 0);" />
+        <ui:VisualElement style="flex-grow: 1; align-items: center; flex-direction: column; justify-content: center; -unity-background-image-tint-color: rgba(255, 255, 255, 0); background-color: rgba(0, 0, 0, 0); align-content: auto;">
+            <ui:Button text="Save Layout 1" class="buttonstyle" style="height: 77px; -unity-text-align: middle-center; width: 342px;" />
+            <ui:Button text="Save Layout 2" class="buttonstyle" style="height: 77px; -unity-text-align: middle-center; width: 342px;" />
+            <ui:Button text="Load Layout 1" class="buttonstyle" style="height: 77px; -unity-text-align: middle-center; width: 342px;" />
+            <ui:Button text="Load Layout 2" class="buttonstyle" style="height: 77px; -unity-text-align: middle-center; width: 342px;" />
+        </ui:VisualElement>
+    </ui:VisualElement>
+</ui:UXML>
