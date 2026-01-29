@@ -103,6 +103,7 @@ public class SaveAndLoad : MonoBehaviour
             }
         }
 
+        // if callback from saveloaduiscript contains save1 then save to slot 1
         string json = JsonUtility.ToJson(model);
         File.WriteAllText(Application.persistentDataPath + "/savefile.json", json);
         Debug.Log($"Data Saved. Furniture Count: {model.furnitureInstances.Count}");
