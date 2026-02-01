@@ -55,7 +55,7 @@ public class ObjectSpawner : MonoBehaviour
     {
         var spawnAction = spawnButton.action;
         var gripAction = gripButton.action;
-        
+        //Debug.Log($"IsOverUIGameObject: {controllerInteractor.IsOverUIGameObject()}");
 
         if (spawnAction == null)
             return;
