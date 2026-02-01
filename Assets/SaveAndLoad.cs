@@ -3,11 +3,10 @@ using System.Collections.Generic;
 using System.IO;
 using Unity.XR.CoreUtils;
 using UnityEngine;
-using UnityEngine.InputSystem;
+using UnityEngine.UI;
 
 public class SaveAndLoad : MonoBehaviour
 {
-
     [Serializable]
     public class FurnitureData
     {
@@ -24,99 +23,86 @@ public class SaveAndLoad : MonoBehaviour
         public List<FurnitureData> furnitureInstances = new List<FurnitureData>();
     }
 
+    [SerializeField]
+    private Button save1Button;
+
+    [SerializeField]
+    private Button load1Button;
+
     private XROrigin xrOrigin;
     public ObjectSpawner objectSpawner;
 
-    //not recommended: public InputAction lets you directly bind a key to this action, but this means I can't use the binding mapping we configured in the Default Input Action asset
-    // and also I think you can't call this in code?
-    public InputActionReference aButton;
-    public InputActionReference bButton; // reference lets you bind an action from the Default Input Action Asset in the inspector
-    // public InputActionProperty lets you EITHER bind a key directly OR use a reference to the Default Input Action asset (pick with three dots)
-
-
-    // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
         xrOrigin = FindFirstObjectByType<XROrigin>();
         objectSpawner = FindFirstObjectByType<ObjectSpawner>();
 
-        // next, determine when action will be triggered.
-        // in input system, timing is deternmined through event mechanism. when system detects input bound to action has occured, action is triggered and event provided by input
-        // System is invoked. We can bind our custom methods to this event so when system detects action being triggered, it will execute method we have bound to that event
-        // aButton.action.performed is the event that is invoked when the action is performed (button pressed)
-        // bind custom method to it with `+= AButton`
-        aButton.action.performed += AButton; // capital AButton is the name of the mapping in the Default Input Action asset (performed is actually a delegate type but not really relevant here)
-        bButton.action.performed += BButton; // REMEMBER TO UNBIND LATER
+        if (save1Button != null)
+        {
+            save1Button.onClick.AddListener(OnSave1ButtonClicked);
+            Debug.Log("Save1 button listener added");
+        }
+        else
+            Debug.LogError("Save1 button not assigned in Inspector.");
+
+        if (load1Button != null)
+        {
+            load1Button.onClick.AddListener(OnLoad1ButtonClicked);
+            Debug.Log("Load1 button listener added");
+        }
+        else
+            Debug.LogError("Load1 button not assigned in Inspector.");
     }
 
-    private void OnDestroy()
+    private void OnSave1ButtonClicked()
     {
-        // unbind methods from events to prevent memory leaks
-        aButton.action.performed -= AButton;
-        bButton.action.performed -= BButton;
-    }
-
-    private void AButton(InputAction.CallbackContext callback)
-    {
-        // if this was the trigger and we need the exactly value:
-        // float value = callback.ReadValue<float>();
-        // output the value if needed:
-        // print($"Trigger pressed with value: {value}");
-        Debug.Log("A button pressed - from event");
+        Debug.Log(">>> Save button clicked <<<");
         SaveData();
     }
 
-    private void BButton(InputAction.CallbackContext callback)
+    private void OnLoad1ButtonClicked()
     {
-        Debug.Log("B button pressed - from event");
+        Debug.Log(">>> Load button clicked <<<");
         LoadData();
     }
 
-    void Update()
+    public void SaveData()
     {
-        // For demonstration, we print the loaded data every frame
-        //Debug.Log($"Player Position: {xrOrigin.transform.position}");
-
-    }
-    void SaveData()
-    {
+        if (objectSpawner == null)
+        {
+            Debug.LogError("objectSpawner is null! SaveData aborted.");
+            return;
+        }
         SaveDataModel model = new SaveDataModel();
         model.playerName = "Amanda";
         model.health = 100.0f;
-        //model.playerPosition = xrOrigin.transform.position;
 
-        //save all furniture
-        if (objectSpawner != null)
+        foreach (var furnitureEntry in objectSpawner.furnitureEntries)
         {
-            foreach (var furnitureEntry in objectSpawner.furnitureEntries)
+            foreach (var instance in furnitureEntry.instances)
             {
-                foreach (var instance in furnitureEntry.instances)
+                var furnitureData = new FurnitureData
                 {
-                    var furnitureData = new FurnitureData
-                    {
-                        position = instance.transform.position,
-                        rotation = instance.transform.rotation,
-                        furniturePrefabIndex = objectSpawner.furnitureEntries.IndexOf(furnitureEntry)
-                    };
-                    model.furnitureInstances.Add(furnitureData);
-                }
+                    position = instance.transform.position,
+                    rotation = instance.transform.rotation,
+                    furniturePrefabIndex = objectSpawner.furnitureEntries.IndexOf(furnitureEntry)
+                };
+                model.furnitureInstances.Add(furnitureData);
             }
         }
 
-        // if callback from saveloaduiscript contains save1 then save to slot 1
         string json = JsonUtility.ToJson(model);
         File.WriteAllText(Application.persistentDataPath + "/savefile.json", json);
         Debug.Log($"Data Saved. Furniture Count: {model.furnitureInstances.Count}");
     }
 
-    void LoadData()
+    public void LoadData()
     {
         SaveDataModel model = JsonUtility.FromJson<SaveDataModel>(File.ReadAllText(Application.persistentDataPath + "/savefile.json"));
-        Debug.Log("Data Loaded");
+        Debug.Log($"Data Loaded. Furniture instances in save: {model.furnitureInstances.Count}");
 
-        // delete current furniture first
         if (objectSpawner != null)
-           {
+        {
             foreach (var furnitureEntry in objectSpawner.furnitureEntries)
             {
                 foreach (var instance in furnitureEntry.instances)
@@ -128,19 +114,25 @@ public class SaveAndLoad : MonoBehaviour
             }
         }
 
-        // respawn furniture at saved positions
-
         if (objectSpawner != null && model.furnitureInstances.Count > 0)
         {
             foreach (var furnitureData in model.furnitureInstances)
             {
-                if (furnitureData.furniturePrefabIndex >=0 && furnitureData.furniturePrefabIndex < objectSpawner.furnitureEntries.Count)
+                if (furnitureData.furniturePrefabIndex >= 0 && furnitureData.furniturePrefabIndex < objectSpawner.furnitureEntries.Count)
                 {
                     var prefab = objectSpawner.furnitureEntries[furnitureData.furniturePrefabIndex].prefab;
+                    Debug.Log($"Respawning furniture at {furnitureData.position}");
                     Instantiate(prefab, furnitureData.position, furnitureData.rotation);
                 }
             }
         }
     }
 
+    private void OnDestroy()
+    {
+        if (save1Button != null)
+            save1Button.onClick.RemoveListener(OnSave1ButtonClicked);
+        if (load1Button != null)
+            load1Button.onClick.RemoveListener(OnLoad1ButtonClicked);
+    }
 }
