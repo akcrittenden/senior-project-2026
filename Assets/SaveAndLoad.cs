@@ -27,7 +27,13 @@ public class SaveAndLoad : MonoBehaviour
     private Button save1Button;
 
     [SerializeField]
+    private Button save2Button;
+
+    [SerializeField]
     private Button load1Button;
+
+    [SerializeField]
+    private Button load2Button;
 
     private XROrigin xrOrigin;
     public ObjectSpawner objectSpawner;
@@ -45,6 +51,14 @@ public class SaveAndLoad : MonoBehaviour
         else
             Debug.LogError("Save1 button not assigned in Inspector.");
 
+        if (save2Button != null)
+        {
+            save2Button.onClick.AddListener(OnSave2ButtonClicked);
+            Debug.Log("save2Button listener added");
+        }
+        else
+            Debug.LogError("Save1 button not assigned in Inspector.");
+
         if (load1Button != null)
         {
             load1Button.onClick.AddListener(OnLoad1ButtonClicked);
@@ -52,21 +66,41 @@ public class SaveAndLoad : MonoBehaviour
         }
         else
             Debug.LogError("Load1 button not assigned in Inspector.");
+
+        if (load2Button != null)
+        {
+            load2Button.onClick.AddListener(OnLoad2ButtonClicked);
+            Debug.Log("load2Button listener added");
+        }
+        else
+            Debug.LogError("Load1 button not assigned in Inspector.");
     }
 
     private void OnSave1ButtonClicked()
     {
-        Debug.Log(">>> Save button clicked <<<");
-        SaveData();
+        Debug.Log(">>> Save 1 button clicked <<<");
+        //SaveData("savefile1.json");
+    }
+
+    private void OnSave2ButtonClicked()
+    {
+        Debug.Log(">>> Save 2 button clicked <<<");
+        //SaveData("savefile2.json");
     }
 
     private void OnLoad1ButtonClicked()
     {
-        Debug.Log(">>> Load button clicked <<<");
-        LoadData();
+        Debug.Log(">>> Load 1 button clicked <<<");
+        //LoadData("savefile1.json");
     }
 
-    public void SaveData()
+    private void OnLoad2ButtonClicked()
+    {
+        Debug.Log(">>> Load 2 button clicked <<<");
+        //LoadData("savefile2.json");
+    }
+
+    public void SaveData(string filename)
     {
         if (objectSpawner == null)
         {
@@ -92,14 +126,22 @@ public class SaveAndLoad : MonoBehaviour
         }
 
         string json = JsonUtility.ToJson(model);
-        File.WriteAllText(Application.persistentDataPath + "/savefile.json", json);
-        Debug.Log($"Data Saved. Furniture Count: {model.furnitureInstances.Count}");
+        string filePath = Path.Combine(Application.persistentDataPath, filename);
+        File.WriteAllText(filePath, json);
+        Debug.Log($"Data Saved to {filename}. Furniture Count: {model.furnitureInstances.Count}");
     }
 
-    public void LoadData()
+    public void LoadData(string filename)
     {
-        SaveDataModel model = JsonUtility.FromJson<SaveDataModel>(File.ReadAllText(Application.persistentDataPath + "/savefile.json"));
-        Debug.Log($"Data Loaded. Furniture instances in save: {model.furnitureInstances.Count}");
+        string filePath = Path.Combine(Application.persistentDataPath, filename);
+
+        if (!File.Exists(filePath))
+        {
+            Debug.LogError($"Save file not found: {filePath}");
+            return;
+        }
+        SaveDataModel model = JsonUtility.FromJson<SaveDataModel>(File.ReadAllText(filePath));
+        Debug.Log($"Data Loaded from {filename}. Furniture instances in save: {model.furnitureInstances.Count}");
 
         if (objectSpawner != null)
         {
@@ -132,7 +174,11 @@ public class SaveAndLoad : MonoBehaviour
     {
         if (save1Button != null)
             save1Button.onClick.RemoveListener(OnSave1ButtonClicked);
+        if (save2Button != null)
+            save2Button.onClick.RemoveListener(OnSave2ButtonClicked);
         if (load1Button != null)
             load1Button.onClick.RemoveListener(OnLoad1ButtonClicked);
+        if (load2Button != null)
+            load2Button.onClick.RemoveListener(OnLoad2ButtonClicked);
     }
 }
