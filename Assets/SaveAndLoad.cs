@@ -4,9 +4,14 @@ using System.IO;
 using Unity.XR.CoreUtils;
 using UnityEngine;
 using UnityEngine.UI;
+using UnityEngine.XR.Interaction.Toolkit.Interactables;
 
 public class SaveAndLoad : MonoBehaviour
 {
+
+    private string currentlyLoadedFile;
+    private System.DateTime lastLoadedFileTime;
+
     [Serializable]
     public class FurnitureData
     {
@@ -57,7 +62,7 @@ public class SaveAndLoad : MonoBehaviour
             Debug.Log("save2Button listener added");
         }
         else
-            Debug.LogError("Save1 button not assigned in Inspector.");
+            Debug.LogError("Save2 button not assigned in Inspector.");
 
         if (load1Button != null)
         {
@@ -73,7 +78,7 @@ public class SaveAndLoad : MonoBehaviour
             Debug.Log("load2Button listener added");
         }
         else
-            Debug.LogError("Load1 button not assigned in Inspector.");
+            Debug.LogError("Load2 button not assigned in Inspector.");
     }
 
     private void OnSave1ButtonClicked()
@@ -97,7 +102,7 @@ public class SaveAndLoad : MonoBehaviour
     private void OnLoad2ButtonClicked()
     {
         Debug.Log(">>> Load 2 button clicked <<<");
-        LoadData("savefile2.json"); 
+        LoadData("savefile2.json");
     }
 
     public void SaveData(string filename)
@@ -127,9 +132,17 @@ public class SaveAndLoad : MonoBehaviour
 
         string json = JsonUtility.ToJson(model);
         string filePath = Path.Combine(Application.persistentDataPath, filename);
-        File.WriteAllText(filePath, json);
-        Debug.Log($"Data Saved to {filename}. Furniture Count: {model.furnitureInstances.Count}");
+        try
+        {
+            File.WriteAllText(filePath, json);
+            Debug.Log($"Data Saved to {filename}. Furniture Count: {model.furnitureInstances.Count}");
+        }
+        catch (Exception ex)
+        {
+            Debug.LogError($"Failed to save data to {filePath}: {ex.Message}");
+        }
     }
+
 
     public void LoadData(string filename)
     {
@@ -140,9 +153,35 @@ public class SaveAndLoad : MonoBehaviour
             Debug.LogError($"Save file not found: {filePath}");
             return;
         }
-        SaveDataModel model = JsonUtility.FromJson<SaveDataModel>(File.ReadAllText(filePath));
-        Debug.Log($"Data Loaded from {filename}. Furniture instances in save: {model.furnitureInstances.Count}");
 
+        // check if we've already loaded this save file
+        if (currentlyLoadedFile == filename)
+        {
+            System.DateTime fileModifiedTime = File.GetLastWriteTime(filePath);
+            if (fileModifiedTime == lastLoadedFileTime)
+            {
+                Debug.Log($"{filename} is already loaded. Skipping load.");
+                return;
+            }
+        }
+
+        SaveDataModel model;
+        try
+        {
+            var fileText = File.ReadAllText(filePath);
+            model = JsonUtility.FromJson<SaveDataModel>(fileText);
+            if (model == null)
+            {
+                Debug.LogError($"Failed to parse save data from {filename}. File may be corrupted.");
+                return;
+            }
+        }
+        catch (Exception ex)
+        {
+            Debug.LogError($"Failed to load data from {filePath}: {ex.Message}");
+            return;
+        }
+        // clear out all objects
         if (objectSpawner != null)
         {
             foreach (var furnitureEntry in objectSpawner.furnitureEntries)
@@ -164,10 +203,23 @@ public class SaveAndLoad : MonoBehaviour
                 {
                     var prefab = objectSpawner.furnitureEntries[furnitureData.furniturePrefabIndex].prefab;
                     Debug.Log($"Respawning furniture at {furnitureData.position}");
-                    Instantiate(prefab, furnitureData.position, furnitureData.rotation);
+                    var instance =  Instantiate(prefab, furnitureData.position, furnitureData.rotation);
+
+                    var interactable = instance.GetComponent<XRBaseInteractable>();
+                    if (interactable != null)
+                    {
+                        objectSpawner.furnitureEntries[furnitureData.furniturePrefabIndex].instances.Add(interactable);
+                        Debug.Log($"Added loaded instance to entry {furnitureData.furniturePrefabIndex} (total now: {objectSpawner.furnitureEntries[furnitureData.furniturePrefabIndex].instances.Count})");
+                    }
+                    else
+                    {
+                        Debug.LogWarning($"Spawned furniture does not have XRBaseInteractable component.");
+                    }
                 }
             }
         }
+        currentlyLoadedFile = filename;
+        lastLoadedFileTime = File.GetLastWriteTime(filePath);
     }
 
     private void OnDestroy()
