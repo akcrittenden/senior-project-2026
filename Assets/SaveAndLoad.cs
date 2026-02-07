@@ -79,25 +79,25 @@ public class SaveAndLoad : MonoBehaviour
     private void OnSave1ButtonClicked()
     {
         Debug.Log(">>> Save 1 button clicked <<<");
-        //SaveData("savefile1.json");
+        SaveData("savefile1.json");
     }
 
     private void OnSave2ButtonClicked()
     {
         Debug.Log(">>> Save 2 button clicked <<<");
-        //SaveData("savefile2.json");
+        SaveData("savefile2.json");
     }
 
     private void OnLoad1ButtonClicked()
     {
         Debug.Log(">>> Load 1 button clicked <<<");
-        //LoadData("savefile1.json");
+        LoadData("savefile1.json");
     }
 
     private void OnLoad2ButtonClicked()
     {
         Debug.Log(">>> Load 2 button clicked <<<");
-        //LoadData("savefile2.json");
+        LoadData("savefile2.json"); 
     }
 
     public void SaveData(string filename)
