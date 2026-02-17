@@ -26,15 +26,11 @@ public class ObjectSpawner : MonoBehaviour
     [Tooltip("List of furniture prefabs that can be spawned")]
     public List<FurnitureEntry> furnitureEntries = new List<FurnitureEntry>();
 
-    [Tooltip("If >=0 and within range, this index will be used to spawn that specific furniture prefab.")]
-    [SerializeField]
-    private int spawnOptionIndex = -1;
+    //[Tooltip("Input Action configured for spawn (e.g. trigger).")]
+    //public InputActionProperty spawnButton;
 
-    [Tooltip("Input Action configured for spawn (e.g. trigger).")]
-    public InputActionProperty spawnButton;
-
-    [Tooltip("Input Action configured for grip button.")]
-    public InputActionProperty gripButton;
+    //[Tooltip("Input Action configured for grip button.")]
+    //public InputActionProperty gripButton;
 
     [SerializeField]
     [Tooltip("Assign the XR interactor (XRDirectInteractor, XRRayInteractor, etc.) from your rig. The interactor's attachTransform or transform will be used for spawn pose.")]
@@ -53,68 +49,51 @@ public class ObjectSpawner : MonoBehaviour
     }
     void Update()
     {
-        var spawnAction = spawnButton.action;
-        var gripAction = gripButton.action;
-        //Debug.Log($"IsOverUIGameObject: {controllerInteractor.IsOverUIGameObject()}");
+        //var spawnAction = spawnButton.action;
+        //var gripAction = gripButton.action;
+        ////Debug.Log($"IsOverUIGameObject: {controllerInteractor.IsOverUIGameObject()}");
 
-        if (spawnAction == null)
-            return;
+        //if (spawnAction == null)
+        //    return;
 
-        if (spawnAction.WasReleasedThisFrame())
-        {
-            if (!gripAction.IsPressed())
-                SpawnObject();
-        }
+        //if (spawnAction.WasReleasedThisFrame())
+        //{
+        //    if (!gripAction.IsPressed())
+        //        SpawnFurniture();
+        //}
     }
 
-    public void SpawnObject()
+    public void SpawnFurniture(GameObject furniturePrefab)
     {
-            if (controllerInteractor && !controllerInteractor.IsOverUIGameObject())
+        if (furniturePrefab == null)
+        {
+            Debug.LogWarning("Furniture prefab to spawn is null.");
+            return;
+        }
+
+        if (controllerInteractor && !controllerInteractor.IsOverUIGameObject())
             {
-
-                if (furnitureEntries == null || furnitureEntries.Count == 0)
-                {
-                    Debug.LogWarning("No furniture prefabs assigned to spawn.");
-                    return;
-                }
-
-                FurnitureEntry entryToSpawn;
-                if (spawnOptionIndex >= 0 && spawnOptionIndex < furnitureEntries.Count)
-                {
-                    entryToSpawn = furnitureEntries[spawnOptionIndex];
-                }
-                else
-                {
-                    entryToSpawn = furnitureEntries[Random.Range(0, furnitureEntries.Count)];
-                }
-                if (entryToSpawn == null)
-                {
-                    Debug.LogWarning("Selected furniture prefab is null.");
-                    return;
-                }
-
-                Transform poseTransform = null;
-                if (controllerInteractor != null)
-                {
-                    poseTransform = controllerInteractor.attachTransform != null
-                        ? controllerInteractor.attachTransform : controllerInteractor.transform;
-                }
-                else
-                {
-                    poseTransform = transform; //fallback
-                }
+                Transform poseTransform = controllerInteractor.attachTransform != null
+                    ? controllerInteractor.attachTransform : controllerInteractor.transform;
 
                 var spawnPos = poseTransform.position + poseTransform.forward * 1.5f;
                 var spawnRot = poseTransform.rotation;
 
-                var instance = Instantiate(entryToSpawn.prefab, spawnPos, spawnRot);
+                var instance = Instantiate(furniturePrefab, spawnPos, spawnRot);
 
                 var interactable = instance.GetComponent<XRBaseInteractable>();
                 if (interactable != null)
                 {
-                    entryToSpawn.instances.Add(interactable);
+                // Find which FurnitureEntry this prefab belongs to and add the instance
+                    for (int i = 0; i < furnitureEntries.Count; i++)
+                    {
+                        if (furnitureEntries[i].prefab == furniturePrefab)
+                        {
+                            furnitureEntries[i].instances.Add(interactable);
+                            break;
+                        }
+                    }
                 }
             }
-        } 
-    
+    } 
 }

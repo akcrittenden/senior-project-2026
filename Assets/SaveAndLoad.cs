@@ -23,8 +23,6 @@ public class SaveAndLoad : MonoBehaviour
     [Serializable]
     public class SaveDataModel
     {
-        public string playerName = "Gage";
-        public float health = 69.0f;
         public List<FurnitureData> furnitureInstances = new List<FurnitureData>();
     }
 
@@ -113,8 +111,6 @@ public class SaveAndLoad : MonoBehaviour
             return;
         }
         SaveDataModel model = new SaveDataModel();
-        model.playerName = "Amanda";
-        model.health = 100.0f;
 
         foreach (var furnitureEntry in objectSpawner.furnitureEntries)
         {
@@ -126,6 +122,7 @@ public class SaveAndLoad : MonoBehaviour
                     rotation = instance.transform.rotation,
                     furniturePrefabIndex = objectSpawner.furnitureEntries.IndexOf(furnitureEntry)
                 };
+                
                 model.furnitureInstances.Add(furnitureData);
             }
         }
