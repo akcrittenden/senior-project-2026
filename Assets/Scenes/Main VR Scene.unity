@@ -355,6 +355,83 @@ Transform:
   m_CorrespondingSourceObject: {fileID: 1680501587, guid: f6336ac4ac8b4d34bc5072418cdc62a0, type: 3}
   m_PrefabInstance: {fileID: 1204685359}
   m_PrefabAsset: {fileID: 0}
+--- !u!114 &152545168 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 4523184849541834034, guid: e893c16accddcfe4aa882cffb9ab209c, type: 3}
+  m_PrefabInstance: {fileID: 1702595925}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1702595927}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4e29b1a8efbd4b44bb3f3716e73f07ff, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: UnityEngine.UI::UnityEngine.UI.Button
+--- !u!114 &152545169 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 5528267961698339605, guid: e893c16accddcfe4aa882cffb9ab209c, type: 3}
+  m_PrefabInstance: {fileID: 1702595925}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1702595928}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4e29b1a8efbd4b44bb3f3716e73f07ff, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: UnityEngine.UI::UnityEngine.UI.Button
+--- !u!114 &152545170 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 6824335490252419784, guid: e893c16accddcfe4aa882cffb9ab209c, type: 3}
+  m_PrefabInstance: {fileID: 1702595925}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1702595929}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4e29b1a8efbd4b44bb3f3716e73f07ff, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: UnityEngine.UI::UnityEngine.UI.Button
+--- !u!114 &152545171 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 4357587027643235934, guid: e893c16accddcfe4aa882cffb9ab209c, type: 3}
+  m_PrefabInstance: {fileID: 1702595925}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1702595930}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4e29b1a8efbd4b44bb3f3716e73f07ff, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: UnityEngine.UI::UnityEngine.UI.Button
+--- !u!114 &152545172 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 3903616521125122170, guid: e893c16accddcfe4aa882cffb9ab209c, type: 3}
+  m_PrefabInstance: {fileID: 1702595925}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1702595931}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4e29b1a8efbd4b44bb3f3716e73f07ff, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: UnityEngine.UI::UnityEngine.UI.Button
+--- !u!114 &152545173 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 121545266636567121, guid: e893c16accddcfe4aa882cffb9ab209c, type: 3}
+  m_PrefabInstance: {fileID: 1702595925}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1702595932}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4e29b1a8efbd4b44bb3f3716e73f07ff, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: UnityEngine.UI::UnityEngine.UI.Button
+--- !u!114 &152545174 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 1627042639794703011, guid: e893c16accddcfe4aa882cffb9ab209c, type: 3}
+  m_PrefabInstance: {fileID: 1702595925}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1702595933}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4e29b1a8efbd4b44bb3f3716e73f07ff, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: UnityEngine.UI::UnityEngine.UI.Button
 --- !u!1 &411290819
 GameObject:
   m_ObjectHideFlags: 0
@@ -400,33 +477,53 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::ObjectSpawner
   furnitureEntries:
-  - prefab: {fileID: 8065043189280355688, guid: e1cccc2c86ded0449bffeaeec7f94309, type: 3}
-  spawnOptionIndex: -1
-  spawnButton:
-    m_UseReference: 1
-    m_Action:
-      m_Name: Spawn Button
-      m_Type: 0
-      m_ExpectedControlType: 
-      m_Id: 38d9749a-8a12-4443-b3c8-32ece62b2bc5
-      m_Processors: 
-      m_Interactions: 
-      m_SingletonActionBindings: []
-      m_Flags: 0
-    m_Reference: {fileID: 83097790271614945, guid: c348712bda248c246b8c49b3db54643f, type: 3}
-  gripButton:
-    m_UseReference: 1
-    m_Action:
-      m_Name: Grip Button
-      m_Type: 0
-      m_ExpectedControlType: 
-      m_Id: 9a817db9-768c-4276-9d7f-d9e19f3977a8
-      m_Processors: 
-      m_Interactions: 
-      m_SingletonActionBindings: []
-      m_Flags: 0
-    m_Reference: {fileID: 187161793506945269, guid: c348712bda248c246b8c49b3db54643f, type: 3}
+  - prefab: {fileID: 919132149155446097, guid: f5ae43e400eec3046b720e3292f3725f, type: 3}
+  - prefab: {fileID: 919132149155446097, guid: ac2c6c7dbffd7a24cbba4b63ec24cf46, type: 3}
+  - prefab: {fileID: 919132149155446097, guid: d782ce43cdc90cf4687c30c10b2ad90d, type: 3}
+  - prefab: {fileID: 919132149155446097, guid: 0e279abb90293f141ada8ddb2c299000, type: 3}
+  - prefab: {fileID: 919132149155446097, guid: 3932aacf918137a46b2fbc457a659a24, type: 3}
+  - prefab: {fileID: 919132149155446097, guid: e806461d1f24e0c44acec7f0a8cf3fc3, type: 3}
+  - prefab: {fileID: 919132149155446097, guid: 3815991e3448bc841be49d978c4c1499, type: 3}
   controllerInteractor: {fileID: 1644345355}
+--- !u!1 &447904782 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 4281213417700329776, guid: e893c16accddcfe4aa882cffb9ab209c, type: 3}
+  m_PrefabInstance: {fileID: 1702595925}
+  m_PrefabAsset: {fileID: 0}
+--- !u!114 &447904783
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 447904782}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 89daaa23393896740a1f22b992b52e61, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::FurnitureButtonManager
+  furnitureButtons:
+  - {fileID: 152545174}
+  - {fileID: 152545173}
+  - {fileID: 152545172}
+  - {fileID: 152545171}
+  - {fileID: 152545170}
+  - {fileID: 152545169}
+  - {fileID: 152545168}
+  objectSpawner: {fileID: 411290821}
+--- !u!114 &800961399
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1702595927}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1de881cbc65b72043a961fd031cf1fcd, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::FurnitureButtonHandler
+  furniturePrefab: {fileID: 919132149155446097, guid: 3815991e3448bc841be49d978c4c1499, type: 3}
 --- !u!1001 &1144425046
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -830,6 +927,19 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &1284525867
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1702595928}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1de881cbc65b72043a961fd031cf1fcd, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::FurnitureButtonHandler
+  furniturePrefab: {fileID: 919132149155446097, guid: e806461d1f24e0c44acec7f0a8cf3fc3, type: 3}
 --- !u!1 &1471828144
 GameObject:
   m_ObjectHideFlags: 0
@@ -1474,6 +1584,10 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 32497190}
     m_Modifications:
+    - target: {fileID: 35925481062035152, guid: e893c16accddcfe4aa882cffb9ab209c, type: 3}
+      propertyPath: m_Name
+      value: LoungeChairButton
+      objectReference: {fileID: 0}
     - target: {fileID: 294804935850638753, guid: e893c16accddcfe4aa882cffb9ab209c, type: 3}
       propertyPath: m_PresetInfoIsWorld
       value: 1
@@ -1501,6 +1615,10 @@ PrefabInstance:
     - target: {fileID: 518585256299064591, guid: e893c16accddcfe4aa882cffb9ab209c, type: 3}
       propertyPath: m_AnchoredPosition.y
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 565516450714423443, guid: e893c16accddcfe4aa882cffb9ab209c, type: 3}
+      propertyPath: m_Enabled
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 702319127738237238, guid: e893c16accddcfe4aa882cffb9ab209c, type: 3}
       propertyPath: m_Name
@@ -1558,6 +1676,10 @@ PrefabInstance:
       propertyPath: m_SizeDelta.x
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 1931215890060207047, guid: e893c16accddcfe4aa882cffb9ab209c, type: 3}
+      propertyPath: m_Name
+      value: GlassCoffeeTableButton
+      objectReference: {fileID: 0}
     - target: {fileID: 2884050730158729529, guid: e893c16accddcfe4aa882cffb9ab209c, type: 3}
       propertyPath: m_AnchorMax.y
       value: 0
@@ -1581,6 +1703,14 @@ PrefabInstance:
     - target: {fileID: 2884050730158729529, guid: e893c16accddcfe4aa882cffb9ab209c, type: 3}
       propertyPath: m_AnchoredPosition.y
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2937178164760570697, guid: e893c16accddcfe4aa882cffb9ab209c, type: 3}
+      propertyPath: m_Name
+      value: LoungeSofaButton
+      objectReference: {fileID: 0}
+    - target: {fileID: 3827545986019457066, guid: e893c16accddcfe4aa882cffb9ab209c, type: 3}
+      propertyPath: m_Name
+      value: DeskChairButton
       objectReference: {fileID: 0}
     - target: {fileID: 4852279847768843581, guid: e893c16accddcfe4aa882cffb9ab209c, type: 3}
       propertyPath: m_AnchorMax.y
@@ -1658,9 +1788,13 @@ PrefabInstance:
       propertyPath: m_AnchoredPosition.y
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 7077865742031547953, guid: e893c16accddcfe4aa882cffb9ab209c, type: 3}
+      propertyPath: m_Name
+      value: DeskButton
+      objectReference: {fileID: 0}
     - target: {fileID: 7371709332000336710, guid: e893c16accddcfe4aa882cffb9ab209c, type: 3}
       propertyPath: m_AnchoredPosition.y
-      value: -17.9
+      value: -24.530188
       objectReference: {fileID: 0}
     - target: {fileID: 8055304506761155279, guid: e893c16accddcfe4aa882cffb9ab209c, type: 3}
       propertyPath: m_Pivot.x
@@ -1778,18 +1912,150 @@ PrefabInstance:
       propertyPath: m_AnchoredPosition.y
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 8432059175069550361, guid: e893c16accddcfe4aa882cffb9ab209c, type: 3}
+      propertyPath: m_Name
+      value: SingleBedButton
+      objectReference: {fileID: 0}
+    - target: {fileID: 9113462394344639656, guid: e893c16accddcfe4aa882cffb9ab209c, type: 3}
+      propertyPath: m_Name
+      value: DoubleBedButton
+      objectReference: {fileID: 0}
     m_RemovedComponents:
     - {fileID: 8998067855071101137, guid: e893c16accddcfe4aa882cffb9ab209c, type: 3}
     - {fileID: 1308015655527382887, guid: e893c16accddcfe4aa882cffb9ab209c, type: 3}
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
-    m_AddedComponents: []
+    m_AddedComponents:
+    - targetCorrespondingSourceObject: {fileID: 4281213417700329776, guid: e893c16accddcfe4aa882cffb9ab209c, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 447904783}
+    - targetCorrespondingSourceObject: {fileID: 9113462394344639656, guid: e893c16accddcfe4aa882cffb9ab209c, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 1702595938}
+    - targetCorrespondingSourceObject: {fileID: 8432059175069550361, guid: e893c16accddcfe4aa882cffb9ab209c, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 1702595937}
+    - targetCorrespondingSourceObject: {fileID: 3827545986019457066, guid: e893c16accddcfe4aa882cffb9ab209c, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 1702595936}
+    - targetCorrespondingSourceObject: {fileID: 7077865742031547953, guid: e893c16accddcfe4aa882cffb9ab209c, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 1702595935}
+    - targetCorrespondingSourceObject: {fileID: 35925481062035152, guid: e893c16accddcfe4aa882cffb9ab209c, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 1702595934}
+    - targetCorrespondingSourceObject: {fileID: 2937178164760570697, guid: e893c16accddcfe4aa882cffb9ab209c, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 1284525867}
+    - targetCorrespondingSourceObject: {fileID: 1931215890060207047, guid: e893c16accddcfe4aa882cffb9ab209c, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 800961399}
   m_SourcePrefab: {fileID: 100100000, guid: e893c16accddcfe4aa882cffb9ab209c, type: 3}
 --- !u!224 &1702595926 stripped
 RectTransform:
   m_CorrespondingSourceObject: {fileID: 8055304506761155279, guid: e893c16accddcfe4aa882cffb9ab209c, type: 3}
   m_PrefabInstance: {fileID: 1702595925}
   m_PrefabAsset: {fileID: 0}
+--- !u!1 &1702595927 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 1931215890060207047, guid: e893c16accddcfe4aa882cffb9ab209c, type: 3}
+  m_PrefabInstance: {fileID: 1702595925}
+  m_PrefabAsset: {fileID: 0}
+--- !u!1 &1702595928 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 2937178164760570697, guid: e893c16accddcfe4aa882cffb9ab209c, type: 3}
+  m_PrefabInstance: {fileID: 1702595925}
+  m_PrefabAsset: {fileID: 0}
+--- !u!1 &1702595929 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 35925481062035152, guid: e893c16accddcfe4aa882cffb9ab209c, type: 3}
+  m_PrefabInstance: {fileID: 1702595925}
+  m_PrefabAsset: {fileID: 0}
+--- !u!1 &1702595930 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 7077865742031547953, guid: e893c16accddcfe4aa882cffb9ab209c, type: 3}
+  m_PrefabInstance: {fileID: 1702595925}
+  m_PrefabAsset: {fileID: 0}
+--- !u!1 &1702595931 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 3827545986019457066, guid: e893c16accddcfe4aa882cffb9ab209c, type: 3}
+  m_PrefabInstance: {fileID: 1702595925}
+  m_PrefabAsset: {fileID: 0}
+--- !u!1 &1702595932 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 8432059175069550361, guid: e893c16accddcfe4aa882cffb9ab209c, type: 3}
+  m_PrefabInstance: {fileID: 1702595925}
+  m_PrefabAsset: {fileID: 0}
+--- !u!1 &1702595933 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 9113462394344639656, guid: e893c16accddcfe4aa882cffb9ab209c, type: 3}
+  m_PrefabInstance: {fileID: 1702595925}
+  m_PrefabAsset: {fileID: 0}
+--- !u!114 &1702595934
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1702595929}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1de881cbc65b72043a961fd031cf1fcd, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::FurnitureButtonHandler
+  furniturePrefab: {fileID: 919132149155446097, guid: 3932aacf918137a46b2fbc457a659a24, type: 3}
+--- !u!114 &1702595935
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1702595930}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1de881cbc65b72043a961fd031cf1fcd, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::FurnitureButtonHandler
+  furniturePrefab: {fileID: 919132149155446097, guid: 0e279abb90293f141ada8ddb2c299000, type: 3}
+--- !u!114 &1702595936
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1702595931}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1de881cbc65b72043a961fd031cf1fcd, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::FurnitureButtonHandler
+  furniturePrefab: {fileID: 919132149155446097, guid: d782ce43cdc90cf4687c30c10b2ad90d, type: 3}
+--- !u!114 &1702595937
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1702595932}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1de881cbc65b72043a961fd031cf1fcd, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::FurnitureButtonHandler
+  furniturePrefab: {fileID: 919132149155446097, guid: ac2c6c7dbffd7a24cbba4b63ec24cf46, type: 3}
+--- !u!114 &1702595938
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1702595933}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1de881cbc65b72043a961fd031cf1fcd, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::FurnitureButtonHandler
+  furniturePrefab: {fileID: 919132149155446097, guid: f5ae43e400eec3046b720e3292f3725f, type: 3}
 --- !u!1 &1741336798
 GameObject:
   m_ObjectHideFlags: 0

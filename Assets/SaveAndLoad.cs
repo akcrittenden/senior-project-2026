@@ -4,11 +4,11 @@ using System.IO;
 using Unity.XR.CoreUtils;
 using UnityEngine;
 using UnityEngine.UI;
+using UnityEngine.Events;
 using UnityEngine.XR.Interaction.Toolkit.Interactables;
 
 public class SaveAndLoad : MonoBehaviour
 {
-
     private string currentlyLoadedFile;
     private System.DateTime lastLoadedFileTime;
 
@@ -17,7 +17,7 @@ public class SaveAndLoad : MonoBehaviour
     {
         public Vector3 position;
         public Quaternion rotation;
-        public int furniturePrefabIndex;
+        public string prefabName;
     }
 
     [Serializable]
@@ -38,6 +38,12 @@ public class SaveAndLoad : MonoBehaviour
     [SerializeField]
     private Button load2Button;
 
+    // stored UnityActions so we can remove them later
+    private UnityAction save1Action;
+    private UnityAction save2Action;
+    private UnityAction load1Action;
+    private UnityAction load2Action;
+
     private XROrigin xrOrigin;
     public ObjectSpawner objectSpawner;
 
@@ -46,9 +52,11 @@ public class SaveAndLoad : MonoBehaviour
         xrOrigin = FindFirstObjectByType<XROrigin>();
         objectSpawner = FindFirstObjectByType<ObjectSpawner>();
 
+        // create and store actions so RemoveListener works
         if (save1Button != null)
         {
-            save1Button.onClick.AddListener(OnSave1ButtonClicked);
+            save1Action = () => SaveData("savefile1.json");
+            save1Button.onClick.AddListener(save1Action);
             Debug.Log("Save1 button listener added");
         }
         else
@@ -56,15 +64,17 @@ public class SaveAndLoad : MonoBehaviour
 
         if (save2Button != null)
         {
-            save2Button.onClick.AddListener(OnSave2ButtonClicked);
-            Debug.Log("save2Button listener added");
+            save2Action = () => SaveData("savefile2.json");
+            save2Button.onClick.AddListener(save2Action);
+            Debug.Log("Save2 button listener added");
         }
         else
             Debug.LogError("Save2 button not assigned in Inspector.");
 
         if (load1Button != null)
         {
-            load1Button.onClick.AddListener(OnLoad1ButtonClicked);
+            load1Action = () => LoadData("savefile1.json");
+            load1Button.onClick.AddListener(load1Action);
             Debug.Log("Load1 button listener added");
         }
         else
@@ -72,35 +82,25 @@ public class SaveAndLoad : MonoBehaviour
 
         if (load2Button != null)
         {
-            load2Button.onClick.AddListener(OnLoad2ButtonClicked);
-            Debug.Log("load2Button listener added");
+            load2Action = () => LoadData("savefile2.json");
+            load2Button.onClick.AddListener(load2Action);
+            Debug.Log("Load2 button listener added");
         }
         else
             Debug.LogError("Load2 button not assigned in Inspector.");
     }
 
-    private void OnSave1ButtonClicked()
+    private void OnDestroy()
     {
-        Debug.Log(">>> Save 1 button clicked <<<");
-        SaveData("savefile1.json");
-    }
-
-    private void OnSave2ButtonClicked()
-    {
-        Debug.Log(">>> Save 2 button clicked <<<");
-        SaveData("savefile2.json");
-    }
-
-    private void OnLoad1ButtonClicked()
-    {
-        Debug.Log(">>> Load 1 button clicked <<<");
-        LoadData("savefile1.json");
-    }
-
-    private void OnLoad2ButtonClicked()
-    {
-        Debug.Log(">>> Load 2 button clicked <<<");
-        LoadData("savefile2.json");
+        // remove listeners using the stored delegates
+        if (save1Button != null && save1Action != null)
+            save1Button.onClick.RemoveListener(save1Action);
+        if (save2Button != null && save2Action != null)
+            save2Button.onClick.RemoveListener(save2Action);
+        if (load1Button != null && load1Action != null)
+            load1Button.onClick.RemoveListener(load1Action);
+        if (load2Button != null && load2Action != null)
+            load2Button.onClick.RemoveListener(load2Action);
     }
 
     public void SaveData(string filename)
@@ -120,9 +120,9 @@ public class SaveAndLoad : MonoBehaviour
                 {
                     position = instance.transform.position,
                     rotation = instance.transform.rotation,
-                    furniturePrefabIndex = objectSpawner.furnitureEntries.IndexOf(furnitureEntry)
+                    prefabName = furnitureEntry.prefab != null ? furnitureEntry.prefab.name : string.Empty
                 };
-                
+
                 model.furnitureInstances.Add(furnitureData);
             }
         }
@@ -140,7 +140,6 @@ public class SaveAndLoad : MonoBehaviour
         }
     }
 
-
     public void LoadData(string filename)
     {
         string filePath = Path.Combine(Application.persistentDataPath, filename);
@@ -151,7 +150,6 @@ public class SaveAndLoad : MonoBehaviour
             return;
         }
 
-        // check if we've already loaded this save file
         if (currentlyLoadedFile == filename)
         {
             System.DateTime fileModifiedTime = File.GetLastWriteTime(filePath);
@@ -178,6 +176,7 @@ public class SaveAndLoad : MonoBehaviour
             Debug.LogError($"Failed to load data from {filePath}: {ex.Message}");
             return;
         }
+
         // clear out all objects
         if (objectSpawner != null)
         {
@@ -196,38 +195,35 @@ public class SaveAndLoad : MonoBehaviour
         {
             foreach (var furnitureData in model.furnitureInstances)
             {
-                if (furnitureData.furniturePrefabIndex >= 0 && furnitureData.furniturePrefabIndex < objectSpawner.furnitureEntries.Count)
+                if (string.IsNullOrEmpty(furnitureData.prefabName))
+                    continue;
+
+                int idx = objectSpawner.FindPrefabIndexByName(furnitureData.prefabName);
+                if (idx >= 0)
                 {
-                    var prefab = objectSpawner.furnitureEntries[furnitureData.furniturePrefabIndex].prefab;
-                    Debug.Log($"Respawning furniture at {furnitureData.position}");
-                    var instance =  Instantiate(prefab, furnitureData.position, furnitureData.rotation);
+                    var prefab = objectSpawner.furnitureEntries[idx].prefab;
+                    Debug.Log($"Respawning furniture '{furnitureData.prefabName}' at {furnitureData.position}");
+                    var instance = Instantiate(prefab, furnitureData.position, furnitureData.rotation);
 
                     var interactable = instance.GetComponent<XRBaseInteractable>();
                     if (interactable != null)
                     {
-                        objectSpawner.furnitureEntries[furnitureData.furniturePrefabIndex].instances.Add(interactable);
-                        Debug.Log($"Added loaded instance to entry {furnitureData.furniturePrefabIndex} (total now: {objectSpawner.furnitureEntries[furnitureData.furniturePrefabIndex].instances.Count})");
+                        objectSpawner.furnitureEntries[idx].instances.Add(interactable);
+                        Debug.Log($"Added loaded instance to entry {idx} (total now: {objectSpawner.furnitureEntries[idx].instances.Count})");
                     }
                     else
                     {
                         Debug.LogWarning($"Spawned furniture does not have XRBaseInteractable component.");
                     }
                 }
+                else
+                {
+                    Debug.LogWarning($"Prefab '{furnitureData.prefabName}' not found in objectSpawner.furnitureEntries. Skipping spawn.");
+                }
             }
         }
+
         currentlyLoadedFile = filename;
         lastLoadedFileTime = File.GetLastWriteTime(filePath);
-    }
-
-    private void OnDestroy()
-    {
-        if (save1Button != null)
-            save1Button.onClick.RemoveListener(OnSave1ButtonClicked);
-        if (save2Button != null)
-            save2Button.onClick.RemoveListener(OnSave2ButtonClicked);
-        if (load1Button != null)
-            load1Button.onClick.RemoveListener(OnLoad1ButtonClicked);
-        if (load2Button != null)
-            load2Button.onClick.RemoveListener(OnLoad2ButtonClicked);
     }
 }

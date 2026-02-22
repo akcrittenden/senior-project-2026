@@ -1,4 +1,3 @@
-
 using Oculus.Interaction;
 using System.Collections.Generic;
 using System.Runtime.CompilerServices;
@@ -26,15 +25,8 @@ public class ObjectSpawner : MonoBehaviour
     [Tooltip("List of furniture prefabs that can be spawned")]
     public List<FurnitureEntry> furnitureEntries = new List<FurnitureEntry>();
 
-    //[Tooltip("Input Action configured for spawn (e.g. trigger).")]
-    //public InputActionProperty spawnButton;
-
-    //[Tooltip("Input Action configured for grip button.")]
-    //public InputActionProperty gripButton;
-
     [SerializeField]
     [Tooltip("Assign the XR interactor (XRDirectInteractor, XRRayInteractor, etc.) from your rig. The interactor's attachTransform or transform will be used for spawn pose.")]
-    // private XRBaseInteractor controllerInteractor;
     private XRRayInteractor controllerInteractor;
 
     public IReadOnlyList<GameObject> FurniturePrefabs
@@ -47,53 +39,109 @@ public class ObjectSpawner : MonoBehaviour
             return list;
         }
     }
-    void Update()
+
+    // Ensure prefab has an entry in furnitureEntries and return its index.
+    // If prefab already exists in the list, returns its index; otherwise adds a new entry.
+    public int EnsurePrefabRegistered(GameObject prefab)
     {
-        //var spawnAction = spawnButton.action;
-        //var gripAction = gripButton.action;
-        ////Debug.Log($"IsOverUIGameObject: {controllerInteractor.IsOverUIGameObject()}");
+        if (prefab == null)
+            return -1;
 
-        //if (spawnAction == null)
-        //    return;
+        for (int i = 0; i < furnitureEntries.Count; i++)
+        {
+            if (furnitureEntries[i].prefab == prefab)
+                return i;
+        }
 
-        //if (spawnAction.WasReleasedThisFrame())
-        //{
-        //    if (!gripAction.IsPressed())
-        //        SpawnFurniture();
-        //}
+        var newEntry = new FurnitureEntry { prefab = prefab };
+        furnitureEntries.Add(newEntry);
+        Debug.Log($"[ObjectSpawner] Registered new prefab '{prefab.name}' at index {furnitureEntries.Count - 1}");
+        return furnitureEntries.Count - 1;
     }
 
+    // Find index by prefab name. Returns -1 if not found.
+    public int FindPrefabIndexByName(string prefabName)
+    {
+        if (string.IsNullOrEmpty(prefabName))
+            return -1;
+        for (int i = 0; i < furnitureEntries.Count; i++)
+        {
+            var p = furnitureEntries[i].prefab;
+            if (p != null && p.name == prefabName)
+                return i;
+        }
+        return -1;
+    }
+
+    void Update()
+    {
+        // spawn via UI buttons / manager now — no per-frame logic here
+    }
+
+    // Primary: spawn by prefab reference (used by FurnitureButtonManager)
     public void SpawnFurniture(GameObject furniturePrefab)
     {
         if (furniturePrefab == null)
         {
-            Debug.LogWarning("Furniture prefab to spawn is null.");
+            Debug.LogWarning("[ObjectSpawner] Furniture prefab to spawn is null.");
             return;
         }
 
-        if (controllerInteractor && !controllerInteractor.IsOverUIGameObject())
+        //// Block spawn when pointing at UI
+        //if (controllerInteractor != null && controllerInteractor.IsOverUIGameObject())
+        //{
+        //    Debug.Log("[ObjectSpawner] Spawn blocked: controller interactor is over UI.");
+        //    return;
+        //}
+
+        Transform poseTransform = controllerInteractor != null
+            ? (controllerInteractor.attachTransform != null ? controllerInteractor.attachTransform : controllerInteractor.transform)
+            : transform; // fallback to this GameObject if no interactor assigned
+
+        var spawnPos = poseTransform.position + poseTransform.forward * 1.5f;
+        var spawnRot = poseTransform.rotation;
+
+        var instance = Instantiate(furniturePrefab, spawnPos, spawnRot);
+
+        var interactable = instance.GetComponent<XRBaseInteractable>();
+        if (interactable != null)
+        {
+            // Ensure prefab is registered and track the instance
+            int index = EnsurePrefabRegistered(furniturePrefab);
+            if (index >= 0)
             {
-                Transform poseTransform = controllerInteractor.attachTransform != null
-                    ? controllerInteractor.attachTransform : controllerInteractor.transform;
-
-                var spawnPos = poseTransform.position + poseTransform.forward * 1.5f;
-                var spawnRot = poseTransform.rotation;
-
-                var instance = Instantiate(furniturePrefab, spawnPos, spawnRot);
-
-                var interactable = instance.GetComponent<XRBaseInteractable>();
-                if (interactable != null)
-                {
-                // Find which FurnitureEntry this prefab belongs to and add the instance
-                    for (int i = 0; i < furnitureEntries.Count; i++)
-                    {
-                        if (furnitureEntries[i].prefab == furniturePrefab)
-                        {
-                            furnitureEntries[i].instances.Add(interactable);
-                            break;
-                        }
-                    }
-                }
+                furnitureEntries[index].instances.Add(interactable);
+                Debug.Log($"[ObjectSpawner] Added spawned instance to entry {index} ('{furniturePrefab.name}'), total instances: {furnitureEntries[index].instances.Count}");
             }
-    } 
+        }
+        else
+        {
+            Debug.LogWarning($"[ObjectSpawner] Spawned furniture '{furniturePrefab.name}' does not contain XRBaseInteractable component.");
+        }
+    }
+
+    // Convenience: spawn by index (useful for inspector wiring)
+    public void SpawnFurnitureByIndex(int index)
+    {
+        if (index < 0 || index >= furnitureEntries.Count)
+        {
+            Debug.LogWarning($"[ObjectSpawner] SpawnFurnitureByIndex: invalid index {index}.");
+            return;
+        }
+        SpawnFurniture(furnitureEntries[index].prefab);
+    }
+
+    // Convenience: spawn by prefab name
+    public void SpawnFurnitureByName(string prefabName)
+    {
+        var idx = FindPrefabIndexByName(prefabName);
+        if (idx >= 0)
+        {
+            SpawnFurniture(furnitureEntries[idx].prefab);
+            return;
+        }
+
+        Debug.LogWarning($"[ObjectSpawner] SpawnFurnitureByName: prefab '{prefabName}' not found in furnitureEntries.");
+    }
 }
+
