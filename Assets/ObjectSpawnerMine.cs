@@ -1,6 +1,7 @@
 using Oculus.Interaction;
 using System.Collections.Generic;
 using System.Runtime.CompilerServices;
+using Unity.XR.CoreUtils;
 using UnityEngine;
 using UnityEngine.InputSystem;
 using UnityEngine.XR.Interaction.Toolkit;
@@ -28,6 +29,9 @@ public class ObjectSpawner : MonoBehaviour
     [SerializeField]
     [Tooltip("Assign the XR interactor (XRDirectInteractor, XRRayInteractor, etc.) from your rig. The interactor's attachTransform or transform will be used for spawn pose.")]
     private XRRayInteractor controllerInteractor;
+
+    [SerializeField]
+    private XROrigin xrOrigin;
 
     public IReadOnlyList<GameObject> FurniturePrefabs
     {
@@ -94,11 +98,11 @@ public class ObjectSpawner : MonoBehaviour
         //    return;
         //}
 
-        Transform poseTransform = controllerInteractor != null
-            ? (controllerInteractor.attachTransform != null ? controllerInteractor.attachTransform : controllerInteractor.transform)
+        Transform poseTransform = xrOrigin != null
+            ? (xrOrigin.transform != null ? xrOrigin.transform : xrOrigin.transform)
             : transform; // fallback to this GameObject if no interactor assigned
 
-        var spawnPos = poseTransform.position + poseTransform.forward * 1.5f;
+        var spawnPos = poseTransform.position + poseTransform.forward * 1.5f + poseTransform.up * 0.5f;
         var spawnRot = poseTransform.rotation;
 
         var instance = Instantiate(furniturePrefab, spawnPos, spawnRot);
