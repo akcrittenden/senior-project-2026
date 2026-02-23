@@ -181,7 +181,7 @@ MonoBehaviour:
   m_ForceGravityOnDetach: 0
   m_RetainTransformParent: 1
   m_StartingSingleGrabTransformers:
-  - {fileID: 4673986947880680541, guid: e1cccc2c86ded0449bffeaeec7f94309, type: 3}
+  - {fileID: 1692530908810157389}
   m_StartingMultipleGrabTransformers: []
   m_AddDefaultGrabTransformers: 1
   m_FarAttachMode: 0
