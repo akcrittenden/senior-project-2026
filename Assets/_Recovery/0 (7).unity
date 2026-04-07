@@ -284,7 +284,8 @@ MonoBehaviour:
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
   m_sharedMaterial: {fileID: 2180264, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
-  m_fontSharedMaterials: []
+  m_fontSharedMaterials:
+  - {fileID: 2180264, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
   m_fontMaterial: {fileID: 0}
   m_fontMaterials: []
   m_fontColor32:
@@ -656,32 +657,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::ObjectSpawner
   furnitureEntries:
   - prefab: {fileID: 8065043189280355688, guid: e1cccc2c86ded0449bffeaeec7f94309, type: 3}
-  spawnOptionIndex: -1
-  spawnButton:
-    m_UseReference: 1
-    m_Action:
-      m_Name: Spawn Button
-      m_Type: 0
-      m_ExpectedControlType: 
-      m_Id: 38d9749a-8a12-4443-b3c8-32ece62b2bc5
-      m_Processors: 
-      m_Interactions: 
-      m_SingletonActionBindings: []
-      m_Flags: 0
-    m_Reference: {fileID: 83097790271614945, guid: c348712bda248c246b8c49b3db54643f, type: 3}
-  gripButton:
-    m_UseReference: 1
-    m_Action:
-      m_Name: Grip Button
-      m_Type: 0
-      m_ExpectedControlType: 
-      m_Id: 9a817db9-768c-4276-9d7f-d9e19f3977a8
-      m_Processors: 
-      m_Interactions: 
-      m_SingletonActionBindings: []
-      m_Flags: 0
-    m_Reference: {fileID: 187161793506945269, guid: c348712bda248c246b8c49b3db54643f, type: 3}
   controllerInteractor: {fileID: 1644345355}
+  xrOrigin: {fileID: 0}
 --- !u!1 &678258407
 GameObject:
   m_ObjectHideFlags: 0
@@ -1950,9 +1927,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6a6c7c29601caa247a207844b95a7bd1, type: 3}
   m_Name: 
   m_EditorClassIdentifier: '::'
+  save1Button: {fileID: 0}
+  save2Button: {fileID: 0}
+  load1Button: {fileID: 0}
+  load2Button: {fileID: 0}
   objectSpawner: {fileID: 0}
-  aButton: {fileID: 592743189140872149, guid: c348712bda248c246b8c49b3db54643f, type: 3}
-  bButton: {fileID: -2099839017146583789, guid: c348712bda248c246b8c49b3db54643f, type: 3}
 --- !u!4 &1680181603
 Transform:
   m_ObjectHideFlags: 0
@@ -2397,7 +2376,8 @@ MonoBehaviour:
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
   m_sharedMaterial: {fileID: 2180264, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
-  m_fontSharedMaterials: []
+  m_fontSharedMaterials:
+  - {fileID: 2180264, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
   m_fontMaterial: {fileID: 0}
   m_fontMaterials: []
   m_fontColor32:
@@ -2646,7 +2626,8 @@ MonoBehaviour:
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
   m_sharedMaterial: {fileID: 2180264, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
-  m_fontSharedMaterials: []
+  m_fontSharedMaterials:
+  - {fileID: 2180264, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
   m_fontMaterial: {fileID: 0}
   m_fontMaterials: []
   m_fontColor32:

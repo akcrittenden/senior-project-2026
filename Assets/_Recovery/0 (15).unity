@@ -402,6 +402,7 @@ MonoBehaviour:
   furnitureEntries:
   - prefab: {fileID: 8065043189280355688, guid: e1cccc2c86ded0449bffeaeec7f94309, type: 3}
   controllerInteractor: {fileID: 1644345355}
+  xrOrigin: {fileID: 0}
 --- !u!1001 &1144425046
 PrefabInstance:
   m_ObjectHideFlags: 0
