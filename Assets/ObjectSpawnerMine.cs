@@ -102,7 +102,7 @@ public class ObjectSpawner : MonoBehaviour
             ? (xrOrigin.transform != null ? xrOrigin.transform : xrOrigin.transform)
             : transform; // fallback to this GameObject if no interactor assigned
 
-        var spawnPos = poseTransform.position + poseTransform.forward * 1f + poseTransform.up * 0.5f;
+        var spawnPos = poseTransform.position + poseTransform.forward * 0.6f + poseTransform.up * 0.3f;
         var spawnRot = poseTransform.rotation;
 
         var instance = Instantiate(furniturePrefab, spawnPos, spawnRot);

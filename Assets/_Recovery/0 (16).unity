@@ -507,7 +507,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::ObjectSpawner
   furnitureEntries:
-  - prefab: {fileID: 6809021198790280749, guid: f7c2dd97b631e04429d56b4059d492e6, type: 3}
+  - prefab: {fileID: 4471874066063601340, guid: fc8b3468cc6aade43a0d5bae01dc9777, type: 3}
   - prefab: {fileID: 5530414118923534032, guid: 2d10ced6514fd8b44beb46c796d12c8d, type: 3}
   - prefab: {fileID: 6809021198790280749, guid: f7c2dd97b631e04429d56b4059d492e6, type: 3}
   - prefab: {fileID: 4474881437574916796, guid: 0740ddb2d11d85e4db3e7f265be7e44d, type: 3}
