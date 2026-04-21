@@ -1,6 +1,13 @@
 using UnityEngine;
 using System.Collections;
 using System.Collections.Generic;
+using UnityEngine.InputSystem;
+using UnityEngine.XR;
+using UnityEngine.XR.Interaction.Toolkit;
+using UnityEngine.XR.Interaction.Toolkit.Inputs;
+using Oculus.Interaction.Input;
+using UnityEngine.XR.Interaction.Toolkit.Interactors;
+using UnityEngine.InputSystem.XR;
 
 [RequireComponent(typeof(MeshFilter))]
 public class PlaneGenerator : MonoBehaviour
@@ -9,7 +16,10 @@ public class PlaneGenerator : MonoBehaviour
     int[] triangles;
 
     Mesh mesh;
-    //button
+    [SerializeField] private XRDirectInteractor controller;
+    [SerializeField] private InputActionProperty pointButton;
+    [SerializeField] private GameObject pointObject;
+    // line renderer to connect points
 
     void Start()
     {
@@ -20,14 +30,30 @@ public class PlaneGenerator : MonoBehaviour
 
     private void Update()
     {
+        bool triggerValue = pointButton.action.ReadValue<bool>();
         // when button pressed, call createpoint
-        // if button.wasReleasedThisFrame
-        // CreatePoint()
+        if (pointButton.action.ReadValue<bool>())
+        {
+            //CreatePoint();
+            Debug.Log(triggerValue);
+        }
+
     }
 
     void CreatePoint()
     {
+        // Does this need to be an anchor??
         // make point at controller front position and add to vertices list
+        // get controller position
+        Vector3 controllerPosition = controller.transform.position;
+        // instantiate point object at controller position
+        // make first point a snapPoint
+        // instantiate line renderer to first point
+        // maybe keep track of which point came first? or instantiate a new one
+        // snappoint: (Create empty gameobject to act as a socket, then use Vector3.Distance or sqrMagnitude to see if
+        // object is within snap range
+        // when in range, set object's position to snapPoint position)
+
     }
 
     void CreateShape()
