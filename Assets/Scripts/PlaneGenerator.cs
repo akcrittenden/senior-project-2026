@@ -1,28 +1,34 @@
+using JetBrains.Annotations;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.InputSystem;
 using UnityEngine.InputSystem.XR;
 using UnityEngine.XR.ARFoundation;
+using UnityEngine.XR.Interaction.Toolkit.Interactors;
 
 //[RequireComponent(typeof(MeshFilter))]
+[RequireComponent(typeof(XRController))]
 public class PlaneGenerator : MonoBehaviour
 {
     //Vector3[] vertices;
     //int[] triangles;
-
+    //public XRController controller;
+    public XRDirectInteractor controller;
+    protected Vector3 controllerPosition;
+    protected Quaternion controllerRotation;
     //Mesh mesh;
     [SerializeField] private InputActionReference triggerAction;
+    [SerializeField] private GameObject pointPrefab;
 
-    public XRController controller;
     //[SerializeField] public InputActionReference pointButton;
     //[SerializeField] public GameObject pointObject;
     // line renderer to connect points
 
     void Start()
     {
-        //mesh = new Mesh();
+        //mesh = new Mesh()
         //GetComponent<MeshFilter>().mesh = mesh;
-        
+
     }
     private void Update()
     {
@@ -36,23 +42,11 @@ public class PlaneGenerator : MonoBehaviour
         // Method 1: Check if performed this frame
         if (triggerAction.action.WasPerformedThisFrame())
         {
-            Debug.Log("Trigger pressed!");
+            Debug.Log("Trigger pressed! Getting position...");
             CreatePoint();
         }
 
-        // Method 2: Check held state (binary)
-        if (triggerAction.action.IsPressed())
-        {
-            Debug.Log("Trigger held");
-        }
-
-        // Method 3: Get analog value (0-1)
-        float triggerValue = triggerAction.action.ReadValue<float>();
-        if (triggerValue > 0.1f)
-        {
-            Debug.Log($"Trigger analog: {triggerValue}");
-        }
-
+         
         }
         //bool triggerValue = pointButton.was;
         //// when button pressed, call createpoint
@@ -65,7 +59,12 @@ public class PlaneGenerator : MonoBehaviour
 
     void CreatePoint()
     {
+        controllerPosition = controller.transform.position;
+        controllerRotation = controller.transform.rotation;
+        Debug.Log("Controller Position: " + controllerPosition);
         // Does this need to be an anchor??
+        GameObject prefab = Instantiate(pointPrefab, controllerPosition, controllerRotation);
+        Debug.Log("Sphere created at: " + controllerPosition);
         // make point at controller front position and add to vertices list
         // get controller position
         //Vector3 controllerPosition = controller.transform.position;
