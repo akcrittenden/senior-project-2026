@@ -462,6 +462,7 @@ MonoBehaviour:
   ray: {fileID: 1644345355}
   triggerAction: {fileID: 83097790271614945, guid: c348712bda248c246b8c49b3db54643f, type: 3}
   pointPrefab: {fileID: 3996306008246386770, guid: cdffe9d1afd2430438f605c3ff98271a, type: 3}
+  measurementLine: {fileID: 6238392157036629770, guid: f3d532476b0653e45bbf6c5448ae4d45, type: 3}
 --- !u!4 &203837213
 Transform:
   m_ObjectHideFlags: 0

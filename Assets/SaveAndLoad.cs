@@ -52,7 +52,7 @@ public class SaveAndLoad : MonoBehaviour
         xrOrigin = FindFirstObjectByType<XROrigin>();
         objectSpawner = FindFirstObjectByType<ObjectSpawner>();
 
-        // create and store actions so RemoveListener works
+        // create and store actions, then make listeners for each button action
         if (save1Button != null)
         {
             save1Action = () => SaveData("savefile1.json");

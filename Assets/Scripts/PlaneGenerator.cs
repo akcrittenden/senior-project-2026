@@ -6,9 +6,9 @@ using UnityEngine.InputSystem.XR;
 using UnityEngine.XR.ARFoundation;
 using UnityEngine.XR.Interaction.Toolkit.Interactors;
 
+
 [RequireComponent(typeof(MeshFilter))]
 [RequireComponent(typeof(XRController))]
-
 public class PlaneGenerator : MonoBehaviour
 {
     public XRDirectInteractor controller;
@@ -16,34 +16,33 @@ public class PlaneGenerator : MonoBehaviour
     protected Vector3 controllerPosition;
     protected Quaternion controllerRotation;
 
-    Vector3[] vertices;
+    List<VertexPoint> vertices; // Changed from GameObject to VertexPoint
     int[] triangles;
     Mesh mesh; 
 
     [SerializeField] private InputActionReference triggerAction;
     [SerializeField] private GameObject pointPrefab;
-
-
-    // line renderer to connect points
+    [SerializeField] private LineRenderer measurementLine;
 
     void Start()
     {
         mesh = new Mesh();
         GetComponent<MeshFilter>().mesh = mesh;
+        vertices = new List<VertexPoint>();
 
     }
     private void Update()
     {
-
         if (triggerAction?.action == null)
         {
             Debug.LogWarning("Trigger action not assigned!");
             return;
         }
 
-        // Method 1: Check if performed this frame
+        // Check if performed this frame
         if (triggerAction.action.WasPerformedThisFrame())
         {
+            // check if ray is over the UI on the wrist, if not, create point
             if (!ray.IsOverUIGameObject())
             {
                 Debug.Log("Trigger pressed! Getting position...");
@@ -51,60 +50,49 @@ public class PlaneGenerator : MonoBehaviour
             }
         }
     }
-        //bool triggerValue = pointButton.was;
-        //// when button pressed, call createpoint
-        //if (pointButton.action.ReadValue<bool>())
-        //{
-        //    //CreatePoint();
-        //    Debug.Log(triggerValue);
-        //}
 
 
     void CreatePoint()
     {
+        // get controller position and rotation
         controllerPosition = controller.transform.position;
         controllerRotation = controller.transform.rotation;
-        GameObject point = Instantiate(pointPrefab, controllerPosition, controllerRotation);
+
+        // instantiate point prefab at controller position and rotation
+        GameObject pointGameObject = Instantiate(pointPrefab, controllerPosition, controllerRotation);
         Debug.Log("Sphere created at: " + controllerPosition);
-        // make point at controller front position and add to vertices list
 
-        // make first point a snapPoint
-        // instantiate line renderer to first point
-        // maybe keep track of which point came first? or instantiate a new one
-        // snappoint: (Create empty gameobject to act as a socket, then use Vector3.Distance or sqrMagnitude to see if
-        // object is within snap range
-        // when in range, set object's position to snapPoint position)
+        // Create VertexPoint object and add to list
+        VertexPoint newPoint = new VertexPoint(pointGameObject, vertices.Count);
+        vertices.Add(newPoint);
 
+        Debug.Log($"Point {newPoint.index} added. Total points: {vertices.Count}");
+
+        if (vertices.Count >= 3)
+        {
+            Debug.Log("At least 3 points created. You can now create a shape.");
+            CreateShape();
+        }
     }
 
     void CreateShape()
     {
-        //vertices = new Vector3[]
-        //{
-        //    //new Vector3(0, 0, 0),
-        //    //new Vector3(0, 1, 0),
-        //    //new Vector3(1, 0, 0),
+        Vector3[] meshVertices = new Vector3[vertices.Count];
+        for (int i = 0; i < vertices.Count; i++ )
+        {
+            meshVertices[i] = vertices[i].position;
+        }
+        //create triangle
+        triangles = new int[] {
+            0
+        };
 
-        //};
+        mesh.Clear();
+        mesh.vertices = meshVertices;
+        mesh.triangles = triangles;
+        mesh.RecalculateNormals();
+        mesh.RecalculateBounds();
 
-        //    if (vertices.Length >= 3)
-        //    {
-        //        triangles = new int[]
-        //        {
-        //        0, 1, 2
-        //        };
-        //    }
-
-        //}
-
-        //void UpdateMesh()
-        //{
-        //    mesh.Clear();
-
-        //    mesh.vertices = vertices;
-        //    mesh.triangles = triangles;
-
-        //    mesh.RecalculateNormals();
-        //}
+        Debug.Log("mesh was created with vertices: " + meshVertices.Length + " and triangles: " + triangles.Length);
     }
 }

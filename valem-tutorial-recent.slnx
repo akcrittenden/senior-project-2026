@@ -92,6 +92,7 @@
   <Project Path="Meta.XR.Editor.ToolingSupport.csproj" />
   <Project Path="Meta.XR.Editor.Settings.csproj" />
   <Project Path="Oculus.Interaction.OVR.Samples.csproj" />
+  <Project Path="Unity.InputSystem.InGameHints.csproj" />
   <Project Path="Meta.Voice.Hub.Editor.csproj" />
   <Project Path="Unity.XR.Interaction.Toolkit.Samples.StarterAssets.csproj" />
   <Project Path="Meta.Wit.Composer.Editor.csproj" />
