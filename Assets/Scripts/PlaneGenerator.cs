@@ -17,8 +17,10 @@ public class PlaneGenerator : MonoBehaviour
     protected Vector3 controllerPosition;
     protected Quaternion controllerRotation;
 
-    List<VertexPoint> vertices; // Changed from GameObject to VertexPoint
+    List<Vector3> newVertices;
     int[] triangles;
+    Vector3[] vertices;
+    List<int> trianglesList;
     Mesh mesh; 
 
     [SerializeField] private InputActionReference triggerAction;
@@ -33,7 +35,8 @@ public class PlaneGenerator : MonoBehaviour
         mesh = new Mesh();
         GetComponent<MeshFilter>().mesh = mesh;
         meshRenderer = GetComponent<MeshRenderer>(); // Get the mesh renderer
-        vertices = new List<VertexPoint>();
+        newVertices = new List<Vector3>();
+        trianglesList = new List<int>();
 
     }
     private void Update()
@@ -67,17 +70,14 @@ public class PlaneGenerator : MonoBehaviour
         GameObject pointGameObject = Instantiate(pointPrefab, controllerPosition, controllerRotation);
         Debug.Log("Sphere created at: " + controllerPosition);
 
+        Vector3 pointLocation = pointGameObject.transform.position;
         // Create VertexPoint object and add to list
-        VertexPoint newPoint = new VertexPoint(pointGameObject, vertices.Count);
-        vertices.Add(newPoint);
+        newVertices.Add(pointLocation);
 
-        Debug.Log($"Point {newPoint.index} added. Total points: {vertices.Count}");
+        Debug.Log($"Point added. Total points: {newVertices.Count}");
 
-        if (vertices.Count < 3)
+        if (newVertices.Count >= 3)
         {
-            Debug.LogWarning("Need at least 3 points to create a mesh");
-            return;
-        } else {
             Debug.Log("At least 3 points created. You can now create a shape.");
             CreateShape();
         }
@@ -85,45 +85,79 @@ public class PlaneGenerator : MonoBehaviour
 
     void CreateShape()
     {
-        // Convert List<VertexPoint> to Vector3[] array
-        // IMPORTANT: Convert from world space to local space
-        Vector3[] meshVertices = new Vector3[vertices.Count];
-        for (int i = 0; i < vertices.Count; i++)
+        // Convert from world space to local space WITHOUT modifying the original list
+        Vector3[] localVertices = new Vector3[newVertices.Count];
+        for (int i = 0; i < newVertices.Count; i++)
         {
-            // Convert world position to local position relative to this GameObject
-            meshVertices[i] = transform.InverseTransformPoint(vertices[i].position);
+            localVertices[i] = transform.InverseTransformPoint(newVertices[i]);
         }
 
-        // Create triangles - fan triangulation from first point
-        List<int> trianglesList = new List<int>();
-        for (int i = 1; i < vertices.Count - 1; i++)
+        // Find closest point to centroid
+        int hub = FindClosestPointToCentroid(localVertices);
+        Debug.Log($"Using vertex {hub} as hub for triangulation");
+        
+        // Create triangles - fan triangulation from the hub point
+        trianglesList.Clear();
+        for (int i = 1; i < newVertices.Count - 1; i++)
         {
-            trianglesList.Add(0);
-            trianglesList.Add(i);
-            trianglesList.Add(i + 1);
+            trianglesList.Add(hub);
+            trianglesList.Add((hub + i) % newVertices.Count);           // Wrap around with modulo
+            trianglesList.Add((hub + i + 1) % newVertices.Count);       // Wrap around with modulo
         }
         triangles = trianglesList.ToArray();
 
         // Apply to mesh
         mesh.Clear();
-        mesh.vertices = meshVertices;
+        mesh.vertices = localVertices;
         mesh.triangles = triangles;
         mesh.RecalculateNormals();
         mesh.RecalculateBounds();
 
-        // Apply material to mesh
+        // Apply material
         if (meshMaterial != null)
         {
             meshRenderer.material = meshMaterial;
-            Debug.Log("applied custom material to mesh");
-        } else
+            Debug.Log("Applied custom material to mesh");
+        }
+        else
         {
             Material newMat = new Material(Shader.Find("Standard"));
             newMat.color = Color.red;
             meshRenderer.material = newMat;
-            Debug.Log("applied debug material to mesh");
+            Debug.Log("Applied debug material to mesh");
         }
 
-        Debug.Log($"Mesh created with {meshVertices.Length} vertices and {triangles.Length / 3} triangles");
+        GetComponent<MeshFilter>().mesh = mesh;
+
+        Debug.Log($"Mesh created with {newVertices.Count} vertices and {triangles.Length / 3} triangles");
+        for (int i = 0; i < triangles.Length; i += 3)
+        {
+            Debug.Log($"  Triangle: {triangles[i]}, {triangles[i+1]}, {triangles[i+2]}");
+        }
+    }
+
+    int FindClosestPointToCentroid(Vector3[] vertices)
+    {
+        Vector3 centroid = Vector3.zero;
+        foreach (var v in vertices)
+        {
+            centroid += v;
+        }
+        centroid /= vertices.Length;
+
+        int closestIndex = 0;
+        float closestDistance = float.MaxValue;
+        for (int i = 0; i < vertices.Length; i++)
+        {
+            float distance = Vector3.Distance(vertices[i], centroid);
+            if (distance < closestDistance)
+            {
+                closestDistance = distance;
+                closestIndex = i;
+            }
+        }
+
+        Debug.Log($"Centroid: {centroid}, Closest point index: {closestIndex} at {vertices[closestIndex]}");
+        return closestIndex;
     }
 }
