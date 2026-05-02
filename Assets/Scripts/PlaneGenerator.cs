@@ -8,6 +8,7 @@ using UnityEngine.XR.Interaction.Toolkit.Interactors;
 
 
 [RequireComponent(typeof(MeshFilter))]
+[RequireComponent(typeof(MeshRenderer))]
 [RequireComponent(typeof(XRController))]
 public class PlaneGenerator : MonoBehaviour
 {
@@ -23,11 +24,15 @@ public class PlaneGenerator : MonoBehaviour
     [SerializeField] private InputActionReference triggerAction;
     [SerializeField] private GameObject pointPrefab;
     [SerializeField] private LineRenderer measurementLine;
+    [SerializeField] private Material meshMaterial;
+
+    private MeshRenderer meshRenderer;
 
     void Start()
     {
         mesh = new Mesh();
         GetComponent<MeshFilter>().mesh = mesh;
+        meshRenderer = GetComponent<MeshRenderer>(); // Get the mesh renderer
         vertices = new List<VertexPoint>();
 
     }
@@ -68,8 +73,11 @@ public class PlaneGenerator : MonoBehaviour
 
         Debug.Log($"Point {newPoint.index} added. Total points: {vertices.Count}");
 
-        if (vertices.Count >= 3)
+        if (vertices.Count < 3)
         {
+            Debug.LogWarning("Need at least 3 points to create a mesh");
+            return;
+        } else {
             Debug.Log("At least 3 points created. You can now create a shape.");
             CreateShape();
         }
@@ -77,22 +85,45 @@ public class PlaneGenerator : MonoBehaviour
 
     void CreateShape()
     {
+        // Convert List<VertexPoint> to Vector3[] array
+        // IMPORTANT: Convert from world space to local space
         Vector3[] meshVertices = new Vector3[vertices.Count];
-        for (int i = 0; i < vertices.Count; i++ )
+        for (int i = 0; i < vertices.Count; i++)
         {
-            meshVertices[i] = vertices[i].position;
+            // Convert world position to local position relative to this GameObject
+            meshVertices[i] = transform.InverseTransformPoint(vertices[i].position);
         }
-        //create triangle
-        triangles = new int[] {
-            0
-        };
 
+        // Create triangles - fan triangulation from first point
+        List<int> trianglesList = new List<int>();
+        for (int i = 1; i < vertices.Count - 1; i++)
+        {
+            trianglesList.Add(0);
+            trianglesList.Add(i);
+            trianglesList.Add(i + 1);
+        }
+        triangles = trianglesList.ToArray();
+
+        // Apply to mesh
         mesh.Clear();
         mesh.vertices = meshVertices;
         mesh.triangles = triangles;
         mesh.RecalculateNormals();
         mesh.RecalculateBounds();
 
-        Debug.Log("mesh was created with vertices: " + meshVertices.Length + " and triangles: " + triangles.Length);
+        // Apply material to mesh
+        if (meshMaterial != null)
+        {
+            meshRenderer.material = meshMaterial;
+            Debug.Log("applied custom material to mesh");
+        } else
+        {
+            Material newMat = new Material(Shader.Find("Standard"));
+            newMat.color = Color.red;
+            meshRenderer.material = newMat;
+            Debug.Log("applied debug material to mesh");
+        }
+
+        Debug.Log($"Mesh created with {meshVertices.Length} vertices and {triangles.Length / 3} triangles");
     }
 }
