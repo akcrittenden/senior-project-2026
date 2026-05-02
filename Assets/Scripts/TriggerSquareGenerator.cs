@@ -12,6 +12,8 @@ public class TriggerSquareGenerator : MonoBehaviour
     [SerializeField] private InputActionReference triggerAction;
     [SerializeField] private Material squareMaterial;
     [SerializeField] private XRRayInteractor ray;
+    [SerializeField] private LineRenderer rayLineRenderer;
+    [SerializeField] private float rayLength = 0.5f;
 
     private Mesh squareMesh;
     private MeshRenderer meshRenderer;
@@ -42,20 +44,26 @@ public class TriggerSquareGenerator : MonoBehaviour
             return;
         }
 
-        // Detect trigger tap
-        if (triggerAction.action.WasPerformedThisFrame())
+        // Visualize the ray if LineRenderer is assigned
+        if (rayLineRenderer != null)
         {
-            if (!isSquareStarted && !ray.IsOverUIGameObject())
+            UpdateRayVisualization();
+        }
+
+        // Detect trigger tap
+        if (triggerAction.action.WasPerformedThisFrame() && !ray.IsOverUIGameObject())
+        {
+            if (!isSquareStarted)
             {
-                // First tap - start the square
-                startPosition = controller.transform.position;
+                // First tap - start the square at fixed ray distance
+                startPosition = GetRayPointAtDistance();
                 isSquareStarted = true;
                 Debug.Log("Square started at: " + startPosition);
             }
-            else if (!ray.IsOverUIGameObject())
+            else
             {
-                // Second tap - finish the square
-                Vector3 endPosition = controller.transform.position;
+                // Second tap - finish the square at fixed ray distance
+                Vector3 endPosition = GetRayPointAtDistance();
                 GenerateSquare(startPosition, endPosition);
                 isSquareStarted = false;
                 Debug.Log("Square finished at: " + endPosition);
@@ -65,38 +73,56 @@ public class TriggerSquareGenerator : MonoBehaviour
         // Update square preview in real-time while square is being drawn
         if (isSquareStarted)
         {
-            Vector3 currentPosition = controller.transform.position;
+            Vector3 currentPosition = GetRayPointAtDistance();
             GenerateSquare(startPosition, currentPosition);
         }
     }
 
+    void UpdateRayVisualization()
+    {
+        Vector3 rayStart = GetRayOrigin();
+        Vector3 rayEnd = GetRayPointAtDistance();
+
+        rayLineRenderer.SetPosition(0, rayStart);
+        rayLineRenderer.SetPosition(1, rayEnd);
+    }
+
+    Vector3 GetRayOrigin()
+    {
+        Transform rayOrigin = ray.rayOriginTransform ?? ray.transform;
+        return rayOrigin.position;
+    }
+
+    Vector3 GetRayPointAtDistance()
+    {
+        Vector3 rayStart = GetRayOrigin();
+        Vector3 rayDirection = (ray.rayOriginTransform ?? ray.transform).forward;
+
+        return rayStart + rayDirection * rayLength;
+    }
+
     void GenerateSquare(Vector3 start, Vector3 end)
     {
-        // Convert to local space
         Vector3 localStart = transform.InverseTransformPoint(start);
         Vector3 localEnd = transform.InverseTransformPoint(end);
 
-        // Calculate the two vectors along each axis
         Vector3 xDir = new Vector3(localEnd.x - localStart.x, 0, 0);
         Vector3 zDir = new Vector3(0, 0, localEnd.z - localStart.z);
 
-        // Define the four corners of the square
         Vector3[] vertices = new Vector3[4]
         {
-            localStart,                          // Bottom-left (0,0)
-            localStart + xDir,                   // Bottom-right (1,0)
-            localStart + xDir + zDir,            // Top-right (1,1)
-            localStart + zDir                    // Top-left (0,1)
+            localStart,
+            localStart + xDir,
+            localStart + xDir + zDir,
+            localStart + zDir
         };
 
-        // Define triangles (two triangles to form a square)
         int[] triangles = new int[6]
         {
-            0, 2, 1,  // First triangle
-            0, 3, 2   // Second triangle
+            0, 2, 1,
+            0, 3, 2
         };
 
-        // Apply to mesh
         squareMesh.Clear();
         squareMesh.vertices = vertices;
         squareMesh.triangles = triangles;
