@@ -87,7 +87,7 @@ public class TriggerSquareGenerator : MonoBehaviour
         {
             // Always show cube preview based on current ray position
             Vector3 currentPosition = GetRayPointAtDistance();
-            float height = currentPosition.y - GetRayOrigin().y;
+            float height = currentPosition.y - planeEndPosition.y;
             GenerateCube(startPosition, planeEndPosition, height);
 
             // Release to finalize cube
