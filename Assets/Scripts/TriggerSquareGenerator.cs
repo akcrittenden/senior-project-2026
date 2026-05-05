@@ -18,7 +18,10 @@ public class TriggerSquareGenerator : MonoBehaviour
     private Mesh squareMesh;
     private MeshRenderer meshRenderer;
     private Vector3 startPosition;
-    private bool isSquareStarted = false;
+    private Vector3 planeEndPosition;
+    private bool isPlaneFinalized = false;
+    private bool isCubeMode = false;
+    private bool triggerWasPressed = false;
 
     void Start()
     {
@@ -26,7 +29,6 @@ public class TriggerSquareGenerator : MonoBehaviour
         GetComponent<MeshFilter>().mesh = squareMesh;
         meshRenderer = GetComponent<MeshRenderer>();
 
-        // Apply material if not assigned
         if (squareMaterial == null)
         {
             squareMaterial = new Material(Shader.Find("Standard"));
@@ -44,37 +46,57 @@ public class TriggerSquareGenerator : MonoBehaviour
             return;
         }
 
-        // Visualize the ray if LineRenderer is assigned
         if (rayLineRenderer != null)
         {
             UpdateRayVisualization();
         }
 
-        // Detect trigger tap
-        if (triggerAction.action.WasPerformedThisFrame() && !ray.IsOverUIGameObject())
+        bool triggerCurrentlyPressed = triggerAction.action.IsPressed();
+        bool triggerJustPressed = triggerCurrentlyPressed && !triggerWasPressed;
+        bool triggerJustReleased = !triggerCurrentlyPressed && triggerWasPressed;
+        triggerWasPressed = triggerCurrentlyPressed;
+
+        // Drawing plane: click and drag
+        if (!isPlaneFinalized && !isCubeMode)
         {
-            if (!isSquareStarted)
+            if (triggerJustPressed && !ray.IsOverUIGameObject())
             {
-                // First tap - start the square at fixed ray distance
+                // Start plane
                 startPosition = GetRayPointAtDistance();
-                isSquareStarted = true;
-                Debug.Log("Square started at: " + startPosition);
+                Debug.Log("Plane started at: " + startPosition);
             }
-            else
+
+            if (triggerCurrentlyPressed)
             {
-                // Second tap - finish the square at fixed ray distance
-                Vector3 endPosition = GetRayPointAtDistance();
-                GenerateSquare(startPosition, endPosition);
-                isSquareStarted = false;
-                Debug.Log("Square finished at: " + endPosition);
+                // Drag to preview plane
+                Vector3 currentPosition = GetRayPointAtDistance();
+                GenerateSquare(startPosition, currentPosition);
+            }
+
+            if (triggerJustReleased)
+            {
+                // Release to finalize plane
+                planeEndPosition = GetRayPointAtDistance();
+                isPlaneFinalized = true;
+                isCubeMode = true;
+                Debug.Log("Plane finished at: " + planeEndPosition);
             }
         }
-
-        // Update square preview in real-time while square is being drawn
-        if (isSquareStarted)
+        // Drawing cube: drag vertically and release to finish
+        else if (isCubeMode && isPlaneFinalized)
         {
+            // Always show cube preview based on current ray position
             Vector3 currentPosition = GetRayPointAtDistance();
-            GenerateSquare(startPosition, currentPosition);
+            float height = currentPosition.y - GetRayOrigin().y;
+            GenerateCube(startPosition, planeEndPosition, height);
+
+            // Release to finalize cube
+            if (triggerJustReleased)
+            {
+                isCubeMode = false;
+                isPlaneFinalized = false;
+                Debug.Log("Cube finished");
+            }
         }
     }
 
@@ -97,7 +119,6 @@ public class TriggerSquareGenerator : MonoBehaviour
     {
         Vector3 rayStart = GetRayOrigin();
         Vector3 rayDirection = (ray.rayOriginTransform ?? ray.transform).forward;
-
         return rayStart + rayDirection * rayLength;
     }
 
@@ -108,7 +129,6 @@ public class TriggerSquareGenerator : MonoBehaviour
 
         Vector3 xDir = new Vector3(localEnd.x - localStart.x, 0, 0);
         Vector3 zDir = new Vector3(0, 0, localEnd.z - localStart.z);
-
         Vector3[] vertices = new Vector3[4]
         {
             localStart,
@@ -121,6 +141,50 @@ public class TriggerSquareGenerator : MonoBehaviour
         {
             0, 2, 1,
             0, 3, 2
+        };
+
+        squareMesh.Clear();
+        squareMesh.vertices = vertices;
+        squareMesh.triangles = triangles;
+        squareMesh.RecalculateNormals();
+        squareMesh.RecalculateBounds();
+    }
+
+    void GenerateCube(Vector3 start, Vector3 end, float height)
+    {
+        Vector3 localStart = transform.InverseTransformPoint(start);
+        Vector3 localEnd = transform.InverseTransformPoint(end);
+
+        Vector3 xDir = new Vector3(localEnd.x - localStart.x, 0, 0);
+        Vector3 zDir = new Vector3(0, 0, localEnd.z - localStart.z);
+        Vector3 yDir = new Vector3(0, height, 0);
+
+        Vector3[] vertices = new Vector3[8]
+        {
+            localStart,
+            localStart + xDir,
+            localStart + xDir + zDir,
+            localStart + zDir,
+            localStart + yDir,
+            localStart + xDir + yDir,
+            localStart + xDir + zDir + yDir,
+            localStart + zDir + yDir
+        };
+
+        int[] triangles = new int[36]
+        {
+            0, 2, 1,
+            0, 3, 2,
+            4, 5, 6,
+            4, 6, 7,
+            0, 1, 5,
+            0, 5, 4,
+            2, 3, 7,
+            2, 7, 6,
+            0, 4, 7,
+            0, 7, 3,
+            1, 2, 6,
+            1, 6, 5
         };
 
         squareMesh.Clear();
