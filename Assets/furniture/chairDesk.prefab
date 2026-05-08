@@ -212,7 +212,7 @@ MonoBehaviour:
   m_ClampScaling: 1
   m_MinimumScaleRatio: 0.25
   m_MaximumScaleRatio: 2
-  m_ScaleMultiplier: 0.25
+  m_ScaleMultiplier: 1
 --- !u!1001 &6469017813321598805
 PrefabInstance:
   m_ObjectHideFlags: 0
