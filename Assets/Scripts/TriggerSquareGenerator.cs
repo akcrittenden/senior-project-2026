@@ -1,11 +1,16 @@
 using Unity.AppUI.UI;
+using Unity.Multiplayer.Center.Common;
+using Unity.VisualScripting;
 using Unity.XR.CoreUtils;
 using UnityEngine;
 using UnityEngine.InputSystem;
+using UnityEngine.XR.Interaction.Toolkit.Interactables;
 using UnityEngine.XR.Interaction.Toolkit.Interactors;
 
 [RequireComponent(typeof(MeshFilter))]
 [RequireComponent(typeof(MeshRenderer))]
+[RequireComponent(typeof(BoxCollider))]
+[RequireComponent(typeof(XRGrabInteractable))]
 public class TriggerSquareGenerator : MonoBehaviour
 {
     public XRDirectInteractor controller;
@@ -17,17 +22,22 @@ public class TriggerSquareGenerator : MonoBehaviour
 
     private Mesh squareMesh;
     private MeshRenderer meshRenderer;
+    private BoxCollider boxCollider;
     private Vector3 startPosition;
     private Vector3 planeEndPosition;
     private bool isPlaneFinalized = false;
     private bool isCubeMode = false;
     private bool triggerWasPressed = false;
+    private Rigidbody rb;
 
     void Start()
     {
         squareMesh = new Mesh();
         GetComponent<MeshFilter>().mesh = squareMesh;
         meshRenderer = GetComponent<MeshRenderer>();
+        boxCollider = GetComponent<BoxCollider>();
+        rb = GetComponent<Rigidbody>();
+
 
         if (squareMaterial == null)
         {
@@ -95,6 +105,7 @@ public class TriggerSquareGenerator : MonoBehaviour
             {
                 isCubeMode = false;
                 isPlaneFinalized = false;
+                UpdateCollider();
                 Debug.Log("Cube finished");
             }
         }
@@ -192,5 +203,19 @@ public class TriggerSquareGenerator : MonoBehaviour
         squareMesh.triangles = triangles;
         squareMesh.RecalculateNormals();
         squareMesh.RecalculateBounds();
+    }
+
+    void UpdateCollider()
+    {
+        if (boxCollider != null && squareMesh.vertices.Length > 0)
+        {
+            // Fit the collider to the current mesh bounds
+            boxCollider.size = squareMesh.bounds.size;
+            boxCollider.center = squareMesh.bounds.center;
+            squareMesh.AddComponent<BoxCollider>();
+            rb.useGravity = true;
+            squareMesh.AddComponent<XRGrabInteractable>(); // add to script object, already applied preset
+
+        }
     }
 }
