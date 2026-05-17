@@ -21,9 +21,9 @@
   <Project Path="Unity.XR.Interaction.Toolkit.csproj" />
   <Project Path="Meta.WitAi.Editor.csproj" />
   <Project Path="Unity.XR.Simulation.Editor.csproj" />
+  <Project Path="Unity.Searcher.Editor.csproj" />
   <Project Path="meta.xr.mrutilitykit.csproj" />
   <Project Path="Oculus.Interaction.Samples.csproj" />
-  <Project Path="Unity.Searcher.Editor.csproj" />
   <Project Path="Unity.XR.Hands.csproj" />
   <Project Path="Oculus.Interaction.csproj" />
   <Project Path="Unity.VisualScripting.Core.csproj" />
