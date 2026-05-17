@@ -787,7 +787,7 @@ PrefabInstance:
     - target: {fileID: 4924506573850889901, guid: ad818c36731146e994540a1896ad8f24, type: 3}
       propertyPath: m_Reticle
       value: 
-      objectReference: {fileID: 8997668306609932175, guid: 934a39ebf98c3e9408ac8bd30ad6abb3, type: 3}
+      objectReference: {fileID: 0}
     - target: {fileID: 4924506573850889901, guid: ad818c36731146e994540a1896ad8f24, type: 3}
       propertyPath: m_LineLength
       value: 5
@@ -1241,19 +1241,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Unity.XR.ARFoundation::UnityEngine.XR.ARFoundation.ARPlaneManager
   <trackablesChanged>k__BackingField:
     m_PersistentCalls:
-      m_Calls:
-      - m_Target: {fileID: 11500000, guid: 4694583967bd9483f9841409d278f46f, type: 3}
-        m_TargetAssemblyTypeName: 
-        m_MethodName: 
-        m_Mode: 0
-        m_Arguments:
-          m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: 
-          m_IntArgument: 0
-          m_FloatArgument: 0
-          m_StringArgument: 
-          m_BoolArgument: 0
-        m_CallState: 2
+      m_Calls: []
   m_PlanePrefab: {fileID: 3836733108702581750, guid: df3a9ce12da061d4193083db3427f130, type: 3}
   m_DetectionMode: -1
 --- !u!114 &1204685363 stripped
@@ -2258,7 +2246,7 @@ PrefabInstance:
     - target: {fileID: 4924506573850889901, guid: ad818c36731146e994540a1896ad8f24, type: 3}
       propertyPath: m_Reticle
       value: 
-      objectReference: {fileID: 8997668306609932175, guid: 934a39ebf98c3e9408ac8bd30ad6abb3, type: 3}
+      objectReference: {fileID: 0}
     - target: {fileID: 4924506573850889901, guid: ad818c36731146e994540a1896ad8f24, type: 3}
       propertyPath: m_LineLength
       value: 5
@@ -2625,6 +2613,18 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 652361328}
     m_Modifications:
+    - target: {fileID: 100111769609122273, guid: 0f456606f4b386c4d96862b4ec3a45e9, type: 3}
+      propertyPath: m_AnchorMax.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 100111769609122273, guid: 0f456606f4b386c4d96862b4ec3a45e9, type: 3}
+      propertyPath: m_AnchorMax.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 100111769609122273, guid: 0f456606f4b386c4d96862b4ec3a45e9, type: 3}
+      propertyPath: m_SizeDelta.x
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 641834384826256275, guid: 0f456606f4b386c4d96862b4ec3a45e9, type: 3}
       propertyPath: m_AnchorMax.x
       value: 0
