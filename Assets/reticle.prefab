@@ -103,7 +103,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Unity.XR.Interaction.Toolkit::UnityEngine.XR.Interaction.Toolkit.Interactors.Visuals.XRInteractorReticleVisual
   m_MaxRaycastDistance: 5
-  m_ReticlePrefab: {fileID: 8997668306609932175}
+  m_ReticlePrefab: {fileID: 0}
   m_PrefabScalingFactor: 1
   m_UndoDistanceScaling: 1
   m_AlignPrefabWithSurfaceNormal: 1
