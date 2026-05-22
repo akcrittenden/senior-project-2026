@@ -18,15 +18,16 @@ public class TriggerSquareGenerator : MonoBehaviour
     [SerializeField] private Material squareMaterial;
     [SerializeField] private XRRayInteractor ray;
     [SerializeField] private LineRenderer rayLineRenderer;
-    [SerializeField] private float rayLength = 0.5f;
+    [SerializeField] private float rayLength = 0.3f;
 
     private Mesh squareMesh;
     private MeshRenderer meshRenderer;
     private BoxCollider boxCollider;
+    [SerializeField] private float cubeHeight = 0.02f;
     private Vector3 startPosition;
     private Vector3 planeEndPosition;
     private bool isPlaneFinalized = false;
-    private bool isCubeMode = false;
+   // private bool isCubeMode = false;
     private bool triggerWasPressed = false;
     private Rigidbody rb;
 
@@ -45,6 +46,7 @@ public class TriggerSquareGenerator : MonoBehaviour
             squareMaterial.color = Color.cyan;
             squareMaterial.SetFloat("_Metallic", 0.5f);
         }
+
         meshRenderer.material = squareMaterial;
     }
 
@@ -67,7 +69,8 @@ public class TriggerSquareGenerator : MonoBehaviour
         triggerWasPressed = triggerCurrentlyPressed;
 
         // Drawing plane: click and drag
-        if (!isPlaneFinalized && !isCubeMode)
+        //if (!isPlaneFinalized && !isCubeMode)
+        if (!isPlaneFinalized)
         {
             if (triggerJustPressed && !ray.IsOverUIGameObject())
             {
@@ -88,27 +91,32 @@ public class TriggerSquareGenerator : MonoBehaviour
                 // Release to finalize plane
                 planeEndPosition = GetRayPointAtDistance();
                 isPlaneFinalized = true;
-                isCubeMode = true;
+               // isCubeMode = true;
                 Debug.Log("Plane finished at: " + planeEndPosition);
-            }
-        }
-        // Drawing cube: drag vertically and release to finish
-        else if (isCubeMode && isPlaneFinalized)
-        {
-            // Always show cube preview based on current ray position
-            Vector3 currentPosition = GetRayPointAtDistance();
-            float height = currentPosition.y - planeEndPosition.y;
-            GenerateCube(startPosition, planeEndPosition, height);
-
-            // Release to finalize cube
-            if (triggerJustReleased)
-            {
-                isCubeMode = false;
-                isPlaneFinalized = false;
+                GenerateCube(startPosition, planeEndPosition, cubeHeight);
                 UpdateCollider();
-                Debug.Log("Cube finished");
+                isPlaneFinalized = false; // reset plane mode after generating cube
             }
+            //here add pre-programmed depth to plane so it mimicks a picture frame, maybe like 0.02f?
+
         }
+        //// Drawing cube: drag vertically and release to finish
+        //else if (isCubeMode && isPlaneFinalized)
+        //{
+        //    // Always show cube preview based on current ray position
+        //    Vector3 currentPosition = GetRayPointAtDistance();
+        //    float height = currentPosition.y - planeEndPosition.y;
+        //    GenerateCube(startPosition, planeEndPosition, height);
+
+        //    // Release to finalize cube
+        //    if (triggerJustReleased)
+        //    {
+        //        isCubeMode = false;
+        //        isPlaneFinalized = false;
+        //        UpdateCollider();
+        //        Debug.Log("Cube finished");
+        //    }
+        //}
     }
 
     void UpdateRayVisualization()
@@ -130,7 +138,7 @@ public class TriggerSquareGenerator : MonoBehaviour
     {
         Vector3 rayStart = GetRayOrigin();
         Vector3 rayDirection = (ray.rayOriginTransform ?? ray.transform).forward;
-        return rayStart + rayDirection * rayLength;
+        return rayStart + rayDirection;
     }
 
     void GenerateSquare(Vector3 start, Vector3 end)
