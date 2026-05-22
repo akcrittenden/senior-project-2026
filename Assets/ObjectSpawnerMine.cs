@@ -97,13 +97,15 @@ public class ObjectSpawner : MonoBehaviour
         //    return;
         //}
 
-        Transform poseTransform = xrOrigin != null
-            ? (xrOrigin.transform != null ? xrOrigin.transform : xrOrigin.transform)
-            : transform; // fallback to this GameObject if no interactor assigned
+        Transform poseTransform = Camera.main != null
+            ? Camera.main.transform
+            : (xrOrigin != null ? xrOrigin.transform : transform);
 
         // spawns furniture a little ahead of player and a little higher above the ground for some dynamic spawning
-        var spawnPos = poseTransform.position + poseTransform.forward * 0.6f + poseTransform.up * 0.3f;
+        var spawnPos = poseTransform.position + poseTransform.forward * 1.5f;
+        spawnPos.y = 0.1f;
         var spawnRot = poseTransform.rotation;
+        //DEBUG: spawn position is still being changed by where the user's head is pointing, fine for now but might be annoying
 
         var instance = Instantiate(furniturePrefab, spawnPos, spawnRot);
 
