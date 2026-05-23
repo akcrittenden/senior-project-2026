@@ -83,18 +83,18 @@ public class TriggerSquareGenerator : MonoBehaviour
             {
                 // Drag to preview plane
                 Vector3 currentPosition = GetRayPointAtDistance();
-                GenerateSquare(startPosition, currentPosition);
+                GeneratePreview(startPosition, currentPosition);
             }
 
             if (triggerJustReleased)
             {
                 // Release to finalize plane
                 planeEndPosition = GetRayPointAtDistance();
-                isPlaneFinalized = true;
-               // isCubeMode = true;
+                isPlaneFinalized = true; 
                 Debug.Log("Plane finished at: " + planeEndPosition);
-                GenerateCube(startPosition, planeEndPosition, cubeHeight);
-                UpdateCollider();
+                GenerateFrame(startPosition, planeEndPosition, cubeHeight);
+                SpawnCube(squareMesh);
+                squareMesh.Clear(); // Clear the preview mesh after spawning the cube
                 isPlaneFinalized = false; // reset plane mode after generating cube
             }
             //here add pre-programmed depth to plane so it mimicks a picture frame, maybe like 0.02f?
@@ -141,7 +141,7 @@ public class TriggerSquareGenerator : MonoBehaviour
         return rayStart + rayDirection;
     }
 
-    void GenerateSquare(Vector3 start, Vector3 end)
+    void GeneratePreview(Vector3 start, Vector3 end)
     {
         Vector3 localStart = transform.InverseTransformPoint(start);
         Vector3 localEnd = transform.InverseTransformPoint(end);
@@ -169,7 +169,7 @@ public class TriggerSquareGenerator : MonoBehaviour
         squareMesh.RecalculateBounds();
     }
 
-    void GenerateCube(Vector3 start, Vector3 end, float height)
+    void GenerateFrame(Vector3 start, Vector3 end, float height)
     {
         Vector3 localStart = transform.InverseTransformPoint(start);
         Vector3 localEnd = transform.InverseTransformPoint(end);
@@ -211,6 +211,33 @@ public class TriggerSquareGenerator : MonoBehaviour
         squareMesh.triangles = triangles;
         squareMesh.RecalculateNormals();
         squareMesh.RecalculateBounds();
+    }
+
+    void SpawnCube(Mesh cubeMesh)
+    {
+        // Create a new GameObject for this cube
+        GameObject newCube = new GameObject("GeneratedCube");
+        newCube.transform.position = transform.position;
+        newCube.transform.rotation = transform.rotation;
+
+        // Add mesh components
+        MeshFilter meshFilter = newCube.AddComponent<MeshFilter>();
+        meshFilter.mesh = Instantiate(cubeMesh);
+
+        MeshRenderer meshRenderer = newCube.AddComponent<MeshRenderer>();
+        meshRenderer.material = squareMaterial;
+
+        // Add collider and rigidbody
+        BoxCollider boxCollider = newCube.AddComponent<BoxCollider>();
+        Rigidbody newRb = newCube.AddComponent<Rigidbody>();
+        newRb.useGravity = true;
+
+        // Add XRGrabInteractable
+        newCube.AddComponent<XRGrabInteractable>();
+
+        // Fit collider to mesh
+        boxCollider.size = cubeMesh.bounds.size;
+        boxCollider.center = cubeMesh.bounds.center;
     }
 
     void UpdateCollider()
