@@ -13,7 +13,6 @@ using UnityEngine.XR.Interaction.Toolkit.Interactors;
 [RequireComponent(typeof(XRGrabInteractable))]
 public class TriggerSquareGenerator : MonoBehaviour
 {
-    public XRDirectInteractor controller;
     [SerializeField] private InputActionReference triggerAction;
     [SerializeField] private Material squareMaterial;
     [SerializeField] private XRRayInteractor ray;
@@ -95,6 +94,7 @@ public class TriggerSquareGenerator : MonoBehaviour
                 GenerateFrame(startPosition, planeEndPosition, cubeHeight);
                 SpawnCube(squareMesh);
                 squareMesh.Clear(); // Clear the preview mesh after spawning the cube
+                
                 isPlaneFinalized = false; // reset plane mode after generating cube
             }
             //here add pre-programmed depth to plane so it mimicks a picture frame, maybe like 0.02f?
@@ -216,7 +216,7 @@ public class TriggerSquareGenerator : MonoBehaviour
     void SpawnCube(Mesh cubeMesh)
     {
         // Create a new GameObject for this cube
-        GameObject newCube = new GameObject("GeneratedCube");
+        GameObject newCube = new GameObject("User Generated Frame");
         newCube.transform.position = transform.position;
         newCube.transform.rotation = transform.rotation;
 
