@@ -14,6 +14,7 @@ using UnityEngine.XR.Interaction.Toolkit.Interactors;
 public class TriggerSquareGenerator : MonoBehaviour
 {
     [SerializeField] private InputActionReference triggerAction;
+    [SerializeField] private Material previewMaterial;
     [SerializeField] private Material squareMaterial;
     [SerializeField] private XRRayInteractor ray;
     [SerializeField] private LineRenderer rayLineRenderer;
@@ -39,14 +40,14 @@ public class TriggerSquareGenerator : MonoBehaviour
         rb = GetComponent<Rigidbody>();
 
 
-        if (squareMaterial == null)
+        if (previewMaterial == null)
         {
-            squareMaterial = new Material(Shader.Find("Standard"));
-            squareMaterial.color = Color.cyan;
-            squareMaterial.SetFloat("_Metallic", 0.5f);
+            previewMaterial = new Material(Shader.Find("Standard"));
+            previewMaterial.color = Color.cyan;
+            previewMaterial.SetFloat("_Metallic", 0.5f);
         }
 
-        meshRenderer.material = squareMaterial;
+        meshRenderer.material = previewMaterial;
     }
 
     void Update()
