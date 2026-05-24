@@ -229,15 +229,15 @@ public class TriggerSquareGenerator : MonoBehaviour
 
         // Add collider and rigidbody
         BoxCollider boxCollider = newCube.AddComponent<BoxCollider>();
+        // Fit collider to mesh
+        boxCollider.size = cubeMesh.bounds.size;
+        boxCollider.center = cubeMesh.bounds.center;
         Rigidbody newRb = newCube.AddComponent<Rigidbody>();
         newRb.useGravity = true;
 
         // Add XRGrabInteractable
         newCube.AddComponent<XRGrabInteractable>();
-
-        // Fit collider to mesh
-        boxCollider.size = cubeMesh.bounds.size;
-        boxCollider.center = cubeMesh.bounds.center;
+        
     }
 
     void UpdateCollider()
