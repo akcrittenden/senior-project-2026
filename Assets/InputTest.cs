@@ -15,11 +15,11 @@ public class InputTest : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        float value = testActionValue.action.ReadValue<float>(); // we mapped testActionValue to the Left Select button
-        Debug.Log("Input Action Value: " + value);
+        //float value = testActionValue.action.ReadValue<float>(); // we mapped testActionValue to the Left Select button
+        //Debug.Log("Input Action Value: " + value);
 
-        bool button = testActionButton.action.IsPressed(); // we mapped testActionValue to the Left Select button
-        Debug.Log("Input Action Button: " + button);
+        //bool button = testActionButton.action.IsPressed(); // we mapped testActionValue to the Left Select button
+        //Debug.Log("Input Action Button: " + button);
 
 
 

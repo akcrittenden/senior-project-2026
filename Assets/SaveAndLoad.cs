@@ -18,6 +18,7 @@ public class SaveAndLoad : MonoBehaviour
         public Vector3 position;
         public Quaternion rotation;
         public string prefabName;
+        public Vector3 scale;
     }
 
     [Serializable]
@@ -52,7 +53,7 @@ public class SaveAndLoad : MonoBehaviour
         xrOrigin = FindFirstObjectByType<XROrigin>();
         objectSpawner = FindFirstObjectByType<ObjectSpawner>();
 
-        // create and store actions so RemoveListener works
+        // create and store actions, then make listeners for each button action
         if (save1Button != null)
         {
             save1Action = () => SaveData("savefile1.json");
@@ -120,7 +121,8 @@ public class SaveAndLoad : MonoBehaviour
                 {
                     position = instance.transform.position,
                     rotation = instance.transform.rotation,
-                    prefabName = furnitureEntry.prefab != null ? furnitureEntry.prefab.name : string.Empty
+                    prefabName = furnitureEntry.prefab != null ? furnitureEntry.prefab.name : string.Empty,
+                    scale = instance.transform.localScale
                 };
 
                 model.furnitureInstances.Add(furnitureData);
@@ -204,11 +206,12 @@ public class SaveAndLoad : MonoBehaviour
                     var prefab = objectSpawner.furnitureEntries[idx].prefab;
                     Debug.Log($"Respawning furniture '{furnitureData.prefabName}' at {furnitureData.position}");
                     var instance = Instantiate(prefab, furnitureData.position, furnitureData.rotation);
+                    instance.transform.localScale = furnitureData.scale; //set scale after instantiation
 
                     var interactable = instance.GetComponent<XRBaseInteractable>();
                     if (interactable != null)
                     {
-                        objectSpawner.furnitureEntries[idx].instances.Add(interactable);
+                        objectSpawner.furnitureEntries[idx].instances.Add(interactable); // add to list to keep track for saving
                         Debug.Log($"Added loaded instance to entry {idx} (total now: {objectSpawner.furnitureEntries[idx].instances.Count})");
                     }
                     else

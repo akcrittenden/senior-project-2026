@@ -27,7 +27,6 @@ public class ObjectSpawner : MonoBehaviour
     public List<FurnitureEntry> furnitureEntries = new List<FurnitureEntry>();
 
     [SerializeField]
-    [Tooltip("Assign the XR interactor (XRDirectInteractor, XRRayInteractor, etc.) from your rig. The interactor's attachTransform or transform will be used for spawn pose.")]
     private XRRayInteractor controllerInteractor;
 
     [SerializeField]
@@ -91,19 +90,22 @@ public class ObjectSpawner : MonoBehaviour
             return;
         }
 
-        //// Block spawn when pointing at UI
+        //// Block spawn when pointing at UI - from prototyping but now we do this with buttons
         //if (controllerInteractor != null && controllerInteractor.IsOverUIGameObject())
         //{
         //    Debug.Log("[ObjectSpawner] Spawn blocked: controller interactor is over UI.");
         //    return;
         //}
 
-        Transform poseTransform = xrOrigin != null
-            ? (xrOrigin.transform != null ? xrOrigin.transform : xrOrigin.transform)
-            : transform; // fallback to this GameObject if no interactor assigned
+        Transform poseTransform = Camera.main != null
+            ? Camera.main.transform
+            : (xrOrigin != null ? xrOrigin.transform : transform);
 
-        var spawnPos = poseTransform.position + poseTransform.forward * 1.5f + poseTransform.up * 0.5f;
+        // spawns furniture a little ahead of player and a little higher above the ground for some dynamic spawning
+        var spawnPos = poseTransform.position + poseTransform.forward * 1.5f;
+        spawnPos.y = 0.1f;
         var spawnRot = poseTransform.rotation;
+        //DEBUG: spawn position is still being changed by where the user's head is pointing, fine for now but might be annoying
 
         var instance = Instantiate(furniturePrefab, spawnPos, spawnRot);
 
