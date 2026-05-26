@@ -98,7 +98,7 @@ public class TriggerSquareGenerator : MonoBehaviour
                 
                 isPlaneFinalized = false; // reset plane mode after generating cube
             }
-            //here add pre-programmed depth to plane so it mimicks a picture frame, maybe like 0.02f?
+            //here add pre-programmed depth to plane so it mimics a picture frame, maybe like 0.02f?
 
         }
         //// Drawing cube: drag vertically and release to finish
@@ -218,40 +218,60 @@ public class TriggerSquareGenerator : MonoBehaviour
     {
         // Create a new GameObject for this cube
         GameObject newCube = new GameObject("User Generated Frame");
-        newCube.transform.position = transform.position;
+        newCube.layer = gameObject.layer;
+
+        // Instantiate and recenter the mesh so the pivot is at its center
+        Mesh newMesh = Instantiate(cubeMesh);
+        Vector3 meshCenter = newMesh.bounds.center;
+
+        // Shift all vertices so the mesh is centered at local origin
+        Vector3[] vertices = newMesh.vertices;
+        for (int i = 0; i < vertices.Length; i++)
+        {
+            vertices[i] -= meshCenter;
+        }
+        newMesh.vertices = vertices;
+        newMesh.RecalculateBounds();
+        newMesh.RecalculateNormals();
+
+        // Position the object at the world-space center of where the mesh was
         newCube.transform.rotation = transform.rotation;
+        newCube.transform.position = transform.TransformPoint(meshCenter);
 
         // Add mesh components
         MeshFilter meshFilter = newCube.AddComponent<MeshFilter>();
-        meshFilter.mesh = Instantiate(cubeMesh);
+        meshFilter.mesh = newMesh;
 
-        MeshRenderer meshRenderer = newCube.AddComponent<MeshRenderer>();
-        meshRenderer.material = squareMaterial;
+        MeshRenderer newMeshRenderer = newCube.AddComponent<MeshRenderer>();
+        newMeshRenderer.material = squareMaterial;
 
-        // Add collider and rigidbody
-        BoxCollider boxCollider = newCube.AddComponent<BoxCollider>();
-        // Fit collider to mesh
-        boxCollider.size = cubeMesh.bounds.size;
-        boxCollider.center = cubeMesh.bounds.center;
+        // Add rigidbody first (XRGrabInteractable requires it)
         Rigidbody newRb = newCube.AddComponent<Rigidbody>();
         newRb.useGravity = true;
+        newRb.isKinematic = false;
 
-        // Add XRGrabInteractable
-        newCube.AddComponent<XRGrabInteractable>();
-        
-    }
+        // Add collider and fit to recentered mesh
+        BoxCollider newBoxCollider = newCube.AddComponent<BoxCollider>();
+        newBoxCollider.size = newMesh.bounds.size;
+        newBoxCollider.center = newMesh.bounds.center;
 
-    void UpdateCollider()
-    {
-        if (boxCollider != null && squareMesh.vertices.Length > 0)
+        // Add XRGrabInteractable and match interaction layers to this object's interactable
+        XRGrabInteractable grabInteractable = newCube.AddComponent<XRGrabInteractable>();
+        XRGrabInteractable sourceInteractable = GetComponent<XRGrabInteractable>();
+        if (sourceInteractable != null)
         {
-            // Fit the collider to the current mesh bounds
-            boxCollider.size = squareMesh.bounds.size;
-            boxCollider.center = squareMesh.bounds.center;
-            squareMesh.AddComponent<BoxCollider>();
-            rb.useGravity = true;
-            squareMesh.AddComponent<XRGrabInteractable>(); // add to script object, already applied preset
-
+            grabInteractable.interactionLayers = sourceInteractable.interactionLayers;
         }
+
+        // Fixed attach point on the larger face, rotated 90 degrees
+        GameObject attachPoint = new GameObject("Attach Point");
+        attachPoint.transform.SetParent(newCube.transform, false);
+        attachPoint.transform.localPosition = new Vector3(0f, newMesh.bounds.extents.y, 0f);
+        attachPoint.transform.localRotation = Quaternion.Euler(90f, 0f, 0f);
+
+        grabInteractable.useDynamicAttach = false;
+        grabInteractable.attachTransform = attachPoint.transform;
     }
+
+
 }
