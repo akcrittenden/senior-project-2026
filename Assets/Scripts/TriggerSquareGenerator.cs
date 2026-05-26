@@ -263,14 +263,14 @@ public class TriggerSquareGenerator : MonoBehaviour
             grabInteractable.interactionLayers = sourceInteractable.interactionLayers;
         }
 
-        // Fixed attach point on the larger face, rotated 90 degrees
-        GameObject attachPoint = new GameObject("Attach Point");
-        attachPoint.transform.SetParent(newCube.transform, false);
-        attachPoint.transform.localPosition = new Vector3(0f, newMesh.bounds.extents.y, 0f);
-        attachPoint.transform.localRotation = Quaternion.Euler(90f, 0f, 0f);
+        //// Fixed attach point on the larger face, rotated 90 degrees
+        //GameObject attachPoint = new GameObject("Attach Point");
+        //attachPoint.transform.SetParent(newCube.transform, false);
+        ////attachPoint.transform.localPosition = new Vector3(0f, newMesh.bounds.extents.y, 0f); 
+        ////attachPoint.transform.localRotation = Quaternion.Euler(90f, 0f, 0f);
 
-        grabInteractable.useDynamicAttach = false;
-        grabInteractable.attachTransform = attachPoint.transform;
+        grabInteractable.useDynamicAttach = true;
+        //grabInteractable.attachTransform = attachPoint.transform;
     }
 
 
