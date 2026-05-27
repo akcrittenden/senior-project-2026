@@ -1,11 +1,9 @@
-using Unity.AppUI.UI;
-using Unity.Multiplayer.Center.Common;
-using Unity.VisualScripting;
-using Unity.XR.CoreUtils;
 using UnityEngine;
 using UnityEngine.InputSystem;
 using UnityEngine.XR.Interaction.Toolkit.Interactables;
 using UnityEngine.XR.Interaction.Toolkit.Interactors;
+using UnityEngine.XR.Interaction.Toolkit.Transformers;
+using UnityEngine.EventSystems;
 
 [RequireComponent(typeof(MeshFilter))]
 [RequireComponent(typeof(MeshRenderer))]
@@ -123,7 +121,20 @@ public class TriggerSquareGenerator : MonoBehaviour
     void UpdateRayVisualization()
     {
         Vector3 rayStart = GetRayOrigin();
-        Vector3 rayEnd = GetRayPointAtDistance();
+        Vector3 fixedEnd = GetRayPointAtDistance(); // fixed length
+        Vector3 rayEnd = fixedEnd;
+
+        // UI hit takes priority
+        if (ray.IsOverUIGameObject() && ray.TryGetCurrentUIRaycastResult(out RaycastResult uiHit))
+        {
+            rayEnd = uiHit.worldPosition;
+        }
+        // Otherwise only snap if it's an XR interactable
+        else if (ray.TryGetCurrent3DRaycastHit(out RaycastHit hit))
+        {
+            if (hit.collider.GetComponentInParent<XRBaseInteractable>() != null)
+                rayEnd = hit.point;
+        }
 
         rayLineRenderer.SetPosition(0, rayStart);
         rayLineRenderer.SetPosition(1, rayEnd);
@@ -139,7 +150,7 @@ public class TriggerSquareGenerator : MonoBehaviour
     {
         Vector3 rayStart = GetRayOrigin();
         Vector3 rayDirection = (ray.rayOriginTransform ?? ray.transform).forward;
-        return rayStart + rayDirection;
+        return rayStart + (rayDirection * rayLength);
     }
 
     void GeneratePreview(Vector3 start, Vector3 end)
@@ -270,7 +281,11 @@ public class TriggerSquareGenerator : MonoBehaviour
         //attachPoint.transform.localRotation = Quaternion.Euler(90f, 0f, 0f);
 
         grabInteractable.useDynamicAttach = true;
-        //grabInteractable.attachTransform = attachPoint.transform;
+        grabInteractable.reinitializeDynamicAttachEverySingleGrab = true;
+
+        XRGeneralGrabTransformer grabTransformer = newCube.AddComponent<XRGeneralGrabTransformer>();
+        grabTransformer.allowTwoHandedRotation = 0;
+        //grabInteractable.attachTransform = attachPoint.transform; 
     }
 
 
