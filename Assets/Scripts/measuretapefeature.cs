@@ -8,8 +8,8 @@ public class measuretapefeature : MonoBehaviour
     [UnityEngine.Range(0.005f, 0.05f)]
     [SerializeField] private float tapeWidth = 0.01f;
     [SerializeField] private Material tapeMaterial;
-    [SerializeField] private Transform leftControllerTapeArea;
-    [SerializeField] private Transform rightControllerTapeArea;
+    [SerializeField] private Transform leftControllerPoint;
+    [SerializeField] private Transform rightControllerPoint;
     [SerializeField] private InputActionReference leftTapeAction;
     [SerializeField] private InputActionReference rightTapeAction;
 
@@ -32,12 +32,12 @@ public class measuretapefeature : MonoBehaviour
             if (WasPressedThisFrame(leftTapeAction))
             {
                 activeController = ActiveController.Left;
-                HandleDownAction(leftControllerTapeArea);
+                HandleDownAction(leftControllerPoint);
             }
             else if (WasPressedThisFrame(rightTapeAction))
             {
                 activeController = ActiveController.Right;
-                HandleDownAction(rightControllerTapeArea);
+                HandleDownAction(rightControllerPoint);
             }
 
             return;
@@ -47,11 +47,11 @@ public class measuretapefeature : MonoBehaviour
         {
             if (IsPressed(leftTapeAction))
             {
-                HandleHoldAction(leftControllerTapeArea);
+                HandleHoldAction(leftControllerPoint);
             }
             else if (WasReleasedThisFrame(leftTapeAction))
             {
-                HandleUpAction(leftControllerTapeArea);
+                HandleUpAction(leftControllerPoint);
                 activeController = ActiveController.None;
             }
 
@@ -60,11 +60,11 @@ public class measuretapefeature : MonoBehaviour
 
         if (IsPressed(rightTapeAction))
         {
-            HandleHoldAction(rightControllerTapeArea);
+            HandleHoldAction(rightControllerPoint);
         }
         else if (WasReleasedThisFrame(rightTapeAction))
         {
-            HandleUpAction(rightControllerTapeArea);
+            HandleUpAction(rightControllerPoint);
             activeController = ActiveController.None;
         }
     }

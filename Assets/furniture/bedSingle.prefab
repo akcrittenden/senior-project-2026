@@ -217,9 +217,10 @@ GameObject:
   - component: {fileID: 4090634571230177486}
   - component: {fileID: 8798357819234232898}
   - component: {fileID: 4050323655905763639}
+  - component: {fileID: 4336431642277410143}
   m_Layer: 0
   m_Name: bedSingle
-  m_TagString: Untagged
+  m_TagString: Furniture
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -418,6 +419,18 @@ MonoBehaviour:
   m_MinimumScaleRatio: 0.25
   m_MaximumScaleRatio: 2
   m_ScaleMultiplier: 0.1
+--- !u!114 &4336431642277410143
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5530414118923534032}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 992eeed8a52aee04cb4de10dc99eb5ca, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::despawn
 --- !u!1 &7827188041701029309
 GameObject:
   m_ObjectHideFlags: 0

@@ -12,9 +12,10 @@ GameObject:
   - component: {fileID: 2245625543662539107}
   - component: {fileID: 1613585734494605353}
   - component: {fileID: 7553005068791720423}
+  - component: {fileID: 3147142029286986520}
   m_Layer: 0
   m_Name: tableGlass
-  m_TagString: Untagged
+  m_TagString: Furniture
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -212,6 +213,18 @@ MonoBehaviour:
   m_MinimumScaleRatio: 0.25
   m_MaximumScaleRatio: 2
   m_ScaleMultiplier: 0.1
+--- !u!114 &3147142029286986520
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4593876431565082505}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 992eeed8a52aee04cb4de10dc99eb5ca, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::despawn
 --- !u!1001 &5629945491918175586
 PrefabInstance:
   m_ObjectHideFlags: 0

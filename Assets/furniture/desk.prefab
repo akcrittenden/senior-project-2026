@@ -12,9 +12,10 @@ GameObject:
   - component: {fileID: 1904955161392954075}
   - component: {fileID: 7190951082588736964}
   - component: {fileID: 7995917919422272156}
+  - component: {fileID: -8433642199307210126}
   m_Layer: 0
   m_Name: desk
-  m_TagString: Untagged
+  m_TagString: Furniture
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -213,6 +214,18 @@ MonoBehaviour:
   m_MinimumScaleRatio: 0.25
   m_MaximumScaleRatio: 2
   m_ScaleMultiplier: 0.1
+--- !u!114 &-8433642199307210126
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4474881437574916796}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 992eeed8a52aee04cb4de10dc99eb5ca, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::despawn
 --- !u!1001 &8234683843362889141
 PrefabInstance:
   m_ObjectHideFlags: 0

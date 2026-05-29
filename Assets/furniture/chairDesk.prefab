@@ -12,9 +12,10 @@ GameObject:
   - component: {fileID: 669559703216824490}
   - component: {fileID: 2740625049753713126}
   - component: {fileID: 434299416014431134}
+  - component: {fileID: -1938855196545307782}
   m_Layer: 0
   m_Name: chairDesk
-  m_TagString: Untagged
+  m_TagString: Furniture
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -213,6 +214,18 @@ MonoBehaviour:
   m_MinimumScaleRatio: 0.25
   m_MaximumScaleRatio: 2
   m_ScaleMultiplier: 0.1
+--- !u!114 &-1938855196545307782
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6809021198790280749}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 992eeed8a52aee04cb4de10dc99eb5ca, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::despawn
 --- !u!1001 &6469017813321598805
 PrefabInstance:
   m_ObjectHideFlags: 0
