@@ -258,8 +258,8 @@ public class TriggerSquareGenerator : MonoBehaviour
 
         // Add rigidbody first (XRGrabInteractable requires it)
         Rigidbody newRb = newCube.AddComponent<Rigidbody>();
-        newRb.useGravity = true;
-        newRb.isKinematic = false;
+        newRb.useGravity = false;
+        newRb.isKinematic = true; // make finished frame not fall to ground
 
         // Add collider and fit to recentered mesh
         BoxCollider newBoxCollider = newCube.AddComponent<BoxCollider>();
@@ -272,20 +272,26 @@ public class TriggerSquareGenerator : MonoBehaviour
         if (sourceInteractable != null)
         {
             grabInteractable.interactionLayers = sourceInteractable.interactionLayers;
+            grabInteractable.selectMode = InteractableSelectMode.Multiple;
         }
 
         // Fixed attach point on the larger face, rotated 90 degrees
         GameObject attachPoint = new GameObject("Attach Point");
         attachPoint.transform.SetParent(newCube.transform, false);
-        //attachPoint.transform.localPosition = new Vector3(0f, newMesh.bounds.extents.y, 0f);
-        //attachPoint.transform.localRotation = Quaternion.Euler(90f, 0f, 0f);
-
-        grabInteractable.useDynamicAttach = true;
-        grabInteractable.reinitializeDynamicAttachEverySingleGrab = true;
+        attachPoint.transform.localPosition = new Vector3(0f, newMesh.bounds.extents.y, 0f);
+        attachPoint.transform.localRotation = Quaternion.Euler(90f, 0f, 0f);
 
         XRGeneralGrabTransformer grabTransformer = newCube.AddComponent<XRGeneralGrabTransformer>();
-        grabTransformer.allowTwoHandedRotation = 0;
-        //grabInteractable.attachTransform = attachPoint.transform; 
+        XRGeneralGrabTransformer sourceTransformer = GetComponent<XRGeneralGrabTransformer>();
+        if (sourceTransformer != null)
+        {
+            {
+                grabTransformer.allowTwoHandedRotation = sourceTransformer.allowTwoHandedRotation;
+            }
+        }
+            grabInteractable.attachTransform = attachPoint.transform;
+        // TODO: can't rotate with two hands for some reason
+
     }
 
 
