@@ -228,8 +228,9 @@ public class TriggerSquareGenerator : MonoBehaviour
     void SpawnCube(Mesh cubeMesh)
     {
         // Create a new GameObject for this cube
-        GameObject newCube = new GameObject("User Generated Frame");
+        GameObject newCube = new GameObject("User Generated Frame", typeof(SnapFramesToWall));
         newCube.layer = gameObject.layer;
+        newCube.tag = "Frame";        
 
         // Instantiate and recenter the mesh so the pivot is at its center
         Mesh newMesh = Instantiate(cubeMesh);
@@ -291,6 +292,9 @@ public class TriggerSquareGenerator : MonoBehaviour
         }
             grabInteractable.attachTransform = attachPoint.transform;
         // TODO: can't rotate with two hands for some reason
+        // TODO: make point the user started with the UP direction and make sure that always faces up
+
+
 
     }
 

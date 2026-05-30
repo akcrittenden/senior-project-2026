@@ -6,6 +6,7 @@ TagManager:
   tags:
   - Despawn
   - Furniture
+  - Frame
   layers:
   - Default
   - TransparentFX
