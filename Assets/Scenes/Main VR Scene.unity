@@ -5738,7 +5738,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::SnapFramesToWall
   rayLength: 5
-  labelFilter: 0
+  labelFilter: 4
   text: {fileID: 523292746583615629, guid: 262b592037dbce349a86290c7bd81027, type: 3}
 --- !u!4 &1957495833
 Transform:

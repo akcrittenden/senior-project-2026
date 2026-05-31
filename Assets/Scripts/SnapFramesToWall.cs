@@ -65,6 +65,7 @@ public class SnapFramesToWall : MonoBehaviour
             text.transform.position = hitpoint;
             text.transform.rotation = Quaternion.LookRotation(-hitNormal);
             text.text = "DEBUG: " + label;
+            // TODO ALSO NOW if I put the script just in the main heirarchy the text doesn't show up when I press the grip button
         }
 
             //bool gripCurrentlyPressed = gripAction.action.IsPressed();
