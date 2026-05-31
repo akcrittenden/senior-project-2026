@@ -21,6 +21,8 @@ public class TriggerSquareGenerator : MonoBehaviour
     [SerializeField] private InputActionReference leftTapeAction;
     [SerializeField] private InputActionReference rightTapeAction;
 
+    [SerializeField] private float minimumFrameArea = 0.0009f;
+
     private Mesh squareMesh;
     private MeshRenderer meshRenderer;
     private BoxCollider boxCollider;
@@ -214,26 +216,6 @@ public class TriggerSquareGenerator : MonoBehaviour
         newFrame.layer = gameObject.layer;
         newFrame.tag = "Frame";
 
-        // Instantiate and recenter the mesh so the pivot is at its center
-        //Mesh newMesh = Instantiate(cubeMesh);
-        //Vector3 meshCenter = newMesh.bounds.center;
-
-        //// Shift all vertices so the mesh is centered at local origin
-        //Vector3[] vertices = newMesh.vertices;
-        //for (int i = 0; i < vertices.Length; i++)
-        //{
-        //    vertices[i] -= meshCenter;
-        //}
-        //newMesh.vertices = vertices;
-        //newMesh.RecalculateBounds();
-        //newMesh.RecalculateNormals();
-
-        //// Position the object at the world-space center of where the mesh was
-        //newFrame.transform.rotation = transform.rotation;
-        ////framePrefab.transform.position = transform.TransformPoint(meshCenter);
-        //newFrame.transform.position = transform.position;
-        //newFrame.transform.localScale = transform.localScale;
-
         Mesh newMesh = Instantiate(cubeMesh);
 
         // Keep mesh exactly as previewed
@@ -272,7 +254,7 @@ public class TriggerSquareGenerator : MonoBehaviour
         attachPoint.transform.SetParent(newFrame.transform, false);
         attachPoint.transform.localPosition =
             newMesh.bounds.center + Vector3.up * newMesh.bounds.extents.y;
-        attachPoint.transform.localRotation = Quaternion.Euler(90f, 0f, 0f);
+        //attachPoint.transform.localRotation = Quaternion.Euler(90f, 0f, 0f);
 
         XRGeneralGrabTransformer grabTransformer = newFrame.AddComponent<XRGeneralGrabTransformer>();
         XRGeneralGrabTransformer sourceTransformer = GetComponent<XRGeneralGrabTransformer>();
@@ -284,6 +266,7 @@ public class TriggerSquareGenerator : MonoBehaviour
         }
         
         grabInteractable.attachTransform = attachPoint.transform;
+        grabInteractable.useDynamicAttach = true;
         // TODO: can't rotate with two hands for some reason
         // TODO: make point the user started with the UP direction and make sure that always faces up
 
@@ -340,6 +323,25 @@ public class TriggerSquareGenerator : MonoBehaviour
         }
 
         planeEndPosition = controllerPoint.position;
+
+        // Calculate dimensions
+        float width = Mathf.Abs(planeEndPosition.x - startPosition.x);
+        float depth = Mathf.Abs(planeEndPosition.z - startPosition.z);
+
+        // Calculate area
+        float area = width * depth;
+
+        // Reject tiny accidental frames
+        if (area < minimumFrameArea)
+        {
+            Debug.Log(
+                $"Frame too small. Area: {area:F4} m²"
+            );
+
+            squareMesh.Clear();
+            return;
+        }
+
         isPlaneFinalized = true;
 
         Debug.Log("Plane finished at: " + planeEndPosition);
@@ -348,7 +350,6 @@ public class TriggerSquareGenerator : MonoBehaviour
         SpawnCube(squareMesh);
 
         squareMesh.Clear();
-
         isPlaneFinalized = false;
     }
 }

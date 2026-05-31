@@ -1328,6 +1328,7 @@ MonoBehaviour:
   rightControllerPoint: {fileID: 1176738575}
   leftTapeAction: {fileID: -5982496924579745919, guid: c348712bda248c246b8c49b3db54643f, type: 3}
   rightTapeAction: {fileID: 83097790271614945, guid: c348712bda248c246b8c49b3db54643f, type: 3}
+  minimumFrameArea: 0.0018
   cubeHeight: 0.02
 --- !u!23 &623518989
 MeshRenderer:
