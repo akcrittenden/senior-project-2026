@@ -1321,12 +1321,13 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::TriggerSquareGenerator
   framePrefab: {fileID: 7989984992536090894, guid: f4eb0fb97bc22044cb992370805d852e, type: 3}
-  triggerAction: {fileID: 83097790271614945, guid: c348712bda248c246b8c49b3db54643f, type: 3}
   previewMaterial: {fileID: 2100000, guid: 98f784f09e8bcb04492764c0fc9e6503, type: 2}
   squareMaterial: {fileID: 2100000, guid: 47af4b1f30c3cac4a898749270a4a70e, type: 2}
-  ray: {fileID: 1644345355}
   rayLineRenderer: {fileID: 6238392157036629770, guid: f3d532476b0653e45bbf6c5448ae4d45, type: 3}
-  rayLength: 0.5
+  leftControllerPoint: {fileID: 904512894}
+  rightControllerPoint: {fileID: 1176738575}
+  leftTapeAction: {fileID: -5982496924579745919, guid: c348712bda248c246b8c49b3db54643f, type: 3}
+  rightTapeAction: {fileID: 83097790271614945, guid: c348712bda248c246b8c49b3db54643f, type: 3}
   cubeHeight: 0.02
 --- !u!23 &623518989
 MeshRenderer:
@@ -2121,6 +2122,11 @@ Transform:
   m_CorrespondingSourceObject: {fileID: 1815721843498474337, guid: 668076cd95ddfe742acf6b4e976a27b8, type: 3}
   m_PrefabInstance: {fileID: 904512892}
   m_PrefabAsset: {fileID: 0}
+--- !u!4 &904512894 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: 8979883750393053539, guid: 668076cd95ddfe742acf6b4e976a27b8, type: 3}
+  m_PrefabInstance: {fileID: 904512892}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1 &1021198086
 GameObject:
   m_ObjectHideFlags: 0
@@ -2649,6 +2655,11 @@ PrefabInstance:
 --- !u!4 &1176738574 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 1815721843498474337, guid: 668076cd95ddfe742acf6b4e976a27b8, type: 3}
+  m_PrefabInstance: {fileID: 1176738573}
+  m_PrefabAsset: {fileID: 0}
+--- !u!4 &1176738575 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: 8979883750393053539, guid: 668076cd95ddfe742acf6b4e976a27b8, type: 3}
   m_PrefabInstance: {fileID: 1176738573}
   m_PrefabAsset: {fileID: 0}
 --- !u!1001 &1204685359
@@ -5708,53 +5719,6 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!1 &1957495831
-GameObject:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 1957495833}
-  - component: {fileID: 1957495832}
-  m_Layer: 0
-  m_Name: SnapFramesToWall
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
---- !u!114 &1957495832
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1957495831}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 3339a507b0dcf90449538924531ac2d8, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::SnapFramesToWall
-  rayLength: 5
-  labelFilter: 4
-  text: {fileID: 523292746583615629, guid: 262b592037dbce349a86290c7bd81027, type: 3}
---- !u!4 &1957495833
-Transform:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1957495831}
-  serializedVersion: 2
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 1.49145, y: -0, z: -2.65784}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_ConstrainProportionsScale: 0
-  m_Children: []
-  m_Father: {fileID: 0}
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1996310573
 GameObject:
   m_ObjectHideFlags: 0
@@ -7052,4 +7016,3 @@ SceneRoots:
   - {fileID: 413391423}
   - {fileID: 2060301631}
   - {fileID: 1560211018}
-  - {fileID: 1957495833}

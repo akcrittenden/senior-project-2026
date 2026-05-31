@@ -12,12 +12,14 @@ using UnityEngine.EventSystems;
 public class TriggerSquareGenerator : MonoBehaviour
 {
     [SerializeField] private GameObject framePrefab;
-    [SerializeField] private InputActionReference triggerAction;
     [SerializeField] private Material previewMaterial;
     [SerializeField] private Material squareMaterial;
-    [SerializeField] private XRRayInteractor ray;
     [SerializeField] private LineRenderer rayLineRenderer;
-    [SerializeField] private float rayLength = 0.3f;
+    [SerializeField] private Transform leftControllerPoint;
+    [SerializeField] private Transform rightControllerPoint;
+
+    [SerializeField] private InputActionReference leftTapeAction;
+    [SerializeField] private InputActionReference rightTapeAction;
 
     private Mesh squareMesh;
     private MeshRenderer meshRenderer;
@@ -29,6 +31,15 @@ public class TriggerSquareGenerator : MonoBehaviour
    // private bool isCubeMode = false;
     private bool triggerWasPressed = false;
     private Rigidbody rb;
+
+    private ActiveController activeController = ActiveController.None;
+
+    private enum ActiveController
+    {
+        None,
+        Left,
+        Right
+    }
 
     void Start()
     {
@@ -51,108 +62,74 @@ public class TriggerSquareGenerator : MonoBehaviour
 
     void Update()
     {
-        if (triggerAction?.action == null)
+        //if (rayLineRenderer != null)
+        //{
+        //    UpdateRayVisualization();
+        //}
+
+        // Decide which controller started the interaction
+        if (activeController == ActiveController.None)
         {
-            Debug.LogWarning("Trigger action not assigned!");
+            if (WasPressedThisFrame(leftTapeAction))
+            {
+                activeController = ActiveController.Left;
+                HandleDownAction(leftControllerPoint);
+            }
+            else if (WasPressedThisFrame(rightTapeAction))
+            {
+                activeController = ActiveController.Right;
+                HandleDownAction(rightControllerPoint);
+            }
+
             return;
         }
 
-        if (rayLineRenderer != null)
+        // LEFT HAND
+        if (activeController == ActiveController.Left)
         {
-            UpdateRayVisualization();
-        }
-
-        bool triggerCurrentlyPressed = triggerAction.action.IsPressed();
-        bool triggerJustPressed = triggerCurrentlyPressed && !triggerWasPressed;
-        bool triggerJustReleased = !triggerCurrentlyPressed && triggerWasPressed;
-        triggerWasPressed = triggerCurrentlyPressed;
-
-        // Drawing plane: click and drag
-        //if (!isPlaneFinalized && !isCubeMode)
-        if (!isPlaneFinalized)
-        {
-            if (triggerJustPressed && !ray.IsOverUIGameObject())
+            if (IsPressed(leftTapeAction))
             {
-                // Start plane
-                startPosition = GetRayPointAtDistance();
-                Debug.Log("Plane started at: " + startPosition);
+                HandleHoldAction(leftControllerPoint);
+            }
+            else if (WasReleasedThisFrame(leftTapeAction))
+            {
+                HandleUpAction(leftControllerPoint);
+                activeController = ActiveController.None;
             }
 
-            if (triggerCurrentlyPressed)
-            {
-                // Drag to preview plane
-                Vector3 currentPosition = GetRayPointAtDistance();
-                GeneratePreview(startPosition, currentPosition);
-            }
-
-            if (triggerJustReleased)
-            {
-                // Release to finalize plane
-                planeEndPosition = GetRayPointAtDistance();
-                isPlaneFinalized = true; 
-                Debug.Log("Plane finished at: " + planeEndPosition);
-                GenerateFrame(startPosition, planeEndPosition, cubeHeight);
-                SpawnCube(squareMesh);
-                squareMesh.Clear(); // Clear the preview mesh after spawning the cube
-                
-                isPlaneFinalized = false; // reset plane mode after generating cube
-            }
-            //here add pre-programmed depth to plane so it mimics a picture frame, maybe like 0.02f?
-
+            return;
         }
-        //// Drawing cube: drag vertically and release to finish
-        //else if (isCubeMode && isPlaneFinalized)
-        //{
-        //    // Always show cube preview based on current ray position
-        //    Vector3 currentPosition = GetRayPointAtDistance();
-        //    float height = currentPosition.y - planeEndPosition.y;
-        //    GenerateCube(startPosition, planeEndPosition, height);
 
-        //    // Release to finalize cube
-        //    if (triggerJustReleased)
-        //    {
-        //        isCubeMode = false;
-        //        isPlaneFinalized = false;
-        //        UpdateCollider();
-        //        Debug.Log("Cube finished");
-        //    }
-        //}
-    }
-
-    void UpdateRayVisualization()
-    {
-        Vector3 rayStart = GetRayOrigin();
-        Vector3 fixedEnd = GetRayPointAtDistance(); // fixed length
-        Vector3 rayEnd = fixedEnd;
-
-        // UI hit takes priority
-        if (ray.IsOverUIGameObject() && ray.TryGetCurrentUIRaycastResult(out RaycastResult uiHit))
+        // RIGHT HAND
+        if (IsPressed(rightTapeAction))
         {
-            rayEnd = uiHit.worldPosition;
+            HandleHoldAction(rightControllerPoint);
         }
-        // Otherwise only snap if it's an XR interactable
-        else if (ray.TryGetCurrent3DRaycastHit(out RaycastHit hit))
+        else if (WasReleasedThisFrame(rightTapeAction))
         {
-            if (hit.collider.GetComponentInParent<XRBaseInteractable>() != null)
-                rayEnd = hit.point;
+            HandleUpAction(rightControllerPoint);
+            activeController = ActiveController.None;
         }
-
-        rayLineRenderer.SetPosition(0, rayStart);
-        rayLineRenderer.SetPosition(1, rayEnd);
     }
 
-    Vector3 GetRayOrigin()
-    {
-        Transform rayOrigin = ray.rayOriginTransform ?? ray.transform;
-        return rayOrigin.position;
-    }
+    //void UpdateRayVisualization()
+    //{
+    //    Transform activeTransform = activeController switch
+    //    {
+    //        ActiveController.Left => leftControllerPoint,
+    //        ActiveController.Right => rightControllerPoint,
+    //        _ => rightControllerPoint // idle fallback
+    //    };
 
-    Vector3 GetRayPointAtDistance()
-    {
-        Vector3 rayStart = GetRayOrigin();
-        Vector3 rayDirection = (ray.rayOriginTransform ?? ray.transform).forward;
-        return rayStart + (rayDirection * rayLength);
-    }
+    //    if (activeTransform == null)
+    //    {
+    //        return;
+    //    }
+
+    //    rayLineRenderer.SetPosition(0, activeTransform.position);
+    //    rayLineRenderer.SetPosition(1, activeTransform.position);
+    //}
+
 
     void GeneratePreview(Vector3 start, Vector3 end)
     {
@@ -238,23 +215,31 @@ public class TriggerSquareGenerator : MonoBehaviour
         newFrame.tag = "Frame";
 
         // Instantiate and recenter the mesh so the pivot is at its center
+        //Mesh newMesh = Instantiate(cubeMesh);
+        //Vector3 meshCenter = newMesh.bounds.center;
+
+        //// Shift all vertices so the mesh is centered at local origin
+        //Vector3[] vertices = newMesh.vertices;
+        //for (int i = 0; i < vertices.Length; i++)
+        //{
+        //    vertices[i] -= meshCenter;
+        //}
+        //newMesh.vertices = vertices;
+        //newMesh.RecalculateBounds();
+        //newMesh.RecalculateNormals();
+
+        //// Position the object at the world-space center of where the mesh was
+        //newFrame.transform.rotation = transform.rotation;
+        ////framePrefab.transform.position = transform.TransformPoint(meshCenter);
+        //newFrame.transform.position = transform.position;
+        //newFrame.transform.localScale = transform.localScale;
+
         Mesh newMesh = Instantiate(cubeMesh);
-        Vector3 meshCenter = newMesh.bounds.center;
 
-        // Shift all vertices so the mesh is centered at local origin
-        Vector3[] vertices = newMesh.vertices;
-        for (int i = 0; i < vertices.Length; i++)
-        {
-            vertices[i] -= meshCenter;
-        }
-        newMesh.vertices = vertices;
-        newMesh.RecalculateBounds();
-        newMesh.RecalculateNormals();
-
-        // Position the object at the world-space center of where the mesh was
-        framePrefab.transform.rotation = transform.rotation;
-        framePrefab.transform.position = transform.TransformPoint(meshCenter);
-        framePrefab.transform.localScale = transform.localScale;
+        // Keep mesh exactly as previewed
+        newFrame.transform.position = transform.position;
+        newFrame.transform.rotation = transform.rotation;
+        newFrame.transform.localScale = transform.localScale;
 
         // Add mesh components
         MeshFilter meshFilter = newFrame.AddComponent<MeshFilter>();
@@ -285,7 +270,8 @@ public class TriggerSquareGenerator : MonoBehaviour
         // Fixed attach point on the larger face, rotated 90 degrees
         GameObject attachPoint = new GameObject("Attach Point");
         attachPoint.transform.SetParent(newFrame.transform, false);
-        attachPoint.transform.localPosition = new Vector3(0f, newMesh.bounds.extents.y, 0f);
+        attachPoint.transform.localPosition =
+            newMesh.bounds.center + Vector3.up * newMesh.bounds.extents.y;
         attachPoint.transform.localRotation = Quaternion.Euler(90f, 0f, 0f);
 
         XRGeneralGrabTransformer grabTransformer = newFrame.AddComponent<XRGeneralGrabTransformer>();
@@ -302,10 +288,67 @@ public class TriggerSquareGenerator : MonoBehaviour
         // TODO: make point the user started with the UP direction and make sure that always faces up
 
         //newCube.AddComponent<SnapFramesToWall>();
-        Debug.Log("Added snap frames script to component I THINK I SHOULD COME FIRST");
+        //Debug.Log("Added snap frames script to component I THINK I SHOULD COME FIRST");
 
 
     }
 
+    private static bool WasPressedThisFrame(InputActionReference actionReference)
+    {
+        var action = actionReference?.action;
+        return action != null && action.WasPressedThisFrame();
+    }
 
+    private static bool WasReleasedThisFrame(InputActionReference actionReference)
+    {
+        var action = actionReference?.action;
+        return action != null && action.WasReleasedThisFrame();
+    }
+
+    private static bool IsPressed(InputActionReference actionReference)
+    {
+        var action = actionReference?.action;
+        return action != null && action.IsPressed();
+    }
+
+    private void HandleDownAction(Transform controllerPoint)
+    {
+        if (controllerPoint == null || isPlaneFinalized)
+        {
+            return;
+        }
+
+        startPosition = controllerPoint.position;
+        Debug.Log("Plane started at: " + startPosition);
+    }
+
+    private void HandleHoldAction(Transform controllerPoint)
+    {
+        if (controllerPoint == null || isPlaneFinalized)
+        {
+            return;
+        }
+
+        GeneratePreview(startPosition, controllerPoint.position);
+    }
+
+    private void HandleUpAction(Transform controllerPoint)
+    {
+        if (controllerPoint == null || isPlaneFinalized)
+        {
+            return;
+        }
+
+        planeEndPosition = controllerPoint.position;
+        isPlaneFinalized = true;
+
+        Debug.Log("Plane finished at: " + planeEndPosition);
+
+        GenerateFrame(startPosition, planeEndPosition, cubeHeight);
+        SpawnCube(squareMesh);
+
+        squareMesh.Clear();
+
+        isPlaneFinalized = false;
+    }
 }
