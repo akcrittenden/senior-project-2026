@@ -11,6 +11,7 @@ using UnityEngine.EventSystems;
 [RequireComponent(typeof(XRGrabInteractable))]
 public class TriggerSquareGenerator : MonoBehaviour
 {
+    [SerializeField] private GameObject framePrefab;
     [SerializeField] private InputActionReference triggerAction;
     [SerializeField] private Material previewMaterial;
     [SerializeField] private Material squareMaterial;
