@@ -3,14 +3,60 @@ using System.Collections.Generic;
 using System.IO;
 using Unity.XR.CoreUtils;
 using UnityEngine;
-using UnityEngine.UI;
 using UnityEngine.Events;
+using UnityEngine.UI;
 using UnityEngine.XR.Interaction.Toolkit.Interactables;
+using UnityEngine.XR.Interaction.Toolkit.Transformers;
 
 public class SaveAndLoad : MonoBehaviour
 {
     private string currentlyLoadedFile;
     private System.DateTime lastLoadedFileTime;
+    [SerializeField]
+    private GameObject framePrefab;
+    
+    [SerializeField]
+    private Material squareMaterial;
+
+    [SerializeField]
+    private TriggerSquareGenerator triggerSquareGenerator;
+
+    [Serializable]
+    public class GeneratedFrameData
+    {
+        public Vector3 position;
+        public Quaternion rotation;
+        public Vector3 scale;
+
+        public List<SerializableVector3> vertices =
+            new List<SerializableVector3>();
+
+        public List<int> triangles =
+            new List<int>();
+    }
+
+    [Serializable]
+    public class SerializableVector3
+    {
+        public float x;
+        public float y;
+        public float z;
+
+        public SerializableVector3() { }
+
+        public SerializableVector3(Vector3 vector)
+        {
+            x = vector.x;
+            y = vector.y;
+            z = vector.z;
+        }
+
+        public Vector3 ToVector3()
+        {
+            return new Vector3(x, y, z);
+        }
+    }
+
 
     [Serializable]
     public class FurnitureData
@@ -24,7 +70,11 @@ public class SaveAndLoad : MonoBehaviour
     [Serializable]
     public class SaveDataModel
     {
-        public List<FurnitureData> furnitureInstances = new List<FurnitureData>();
+        public List<FurnitureData> furnitureInstances =
+            new List<FurnitureData>();
+
+        public List<GeneratedFrameData> generatedFrames =
+            new List<GeneratedFrameData>();
     }
 
     [SerializeField]
@@ -129,6 +179,36 @@ public class SaveAndLoad : MonoBehaviour
             }
         }
 
+        GameObject[] frames = GameObject.FindGameObjectsWithTag("Frame");
+
+        foreach (GameObject frame in frames)
+        {
+            MeshFilter meshFilter = frame.GetComponent<MeshFilter>();
+
+            if (meshFilter == null || meshFilter.sharedMesh == null)
+                continue;
+
+            Mesh mesh = meshFilter.sharedMesh;
+
+            GeneratedFrameData frameData =
+                new GeneratedFrameData
+                {
+                    position = frame.transform.position,
+                    rotation = frame.transform.rotation,
+                    scale = frame.transform.localScale
+                };
+
+            foreach (Vector3 vertex in mesh.vertices)
+            {
+                frameData.vertices.Add(
+                    new SerializableVector3(vertex));
+            }
+
+            frameData.triangles.AddRange(mesh.triangles);
+
+            model.generatedFrames.Add(frameData);
+        }
+
         string json = JsonUtility.ToJson(model);
         string filePath = Path.Combine(Application.persistentDataPath, filename);
         try
@@ -140,6 +220,8 @@ public class SaveAndLoad : MonoBehaviour
         {
             Debug.LogError($"Failed to save data to {filePath}: {ex.Message}");
         }
+
+
     }
 
     public void LoadData(string filename)
@@ -193,6 +275,13 @@ public class SaveAndLoad : MonoBehaviour
             }
         }
 
+        GameObject[] existingFrames = GameObject.FindGameObjectsWithTag("Frame");
+
+        foreach (GameObject frame in existingFrames)
+        {
+            Destroy(frame);
+        }
+
         if (objectSpawner != null && model.furnitureInstances.Count > 0)
         {
             foreach (var furnitureData in model.furnitureInstances)
@@ -224,6 +313,100 @@ public class SaveAndLoad : MonoBehaviour
                     Debug.LogWarning($"Prefab '{furnitureData.prefabName}' not found in objectSpawner.furnitureEntries. Skipping spawn.");
                 }
             }
+        }
+
+        foreach (var frameData in model.generatedFrames)
+        {
+            GameObject newFrame =
+                Instantiate(
+                    framePrefab,
+                    frameData.position,
+                    frameData.rotation);
+
+            newFrame.transform.localScale =
+                frameData.scale;
+
+            newFrame.layer = gameObject.layer;
+            newFrame.tag = "Frame";
+
+            // rebuild mesh
+            Mesh mesh = new Mesh();
+
+            Vector3[] vertices =
+                new Vector3[
+                    frameData.vertices.Count];
+
+            for (int i = 0;
+                 i < frameData.vertices.Count;
+                 i++)
+            {
+                vertices[i] =
+                    frameData.vertices[i]
+                    .ToVector3();
+            }
+
+            mesh.vertices = vertices;
+            mesh.triangles =
+                frameData.triangles.ToArray();
+
+            mesh.RecalculateNormals();
+            mesh.RecalculateBounds();
+
+            // mesh filter
+            MeshFilter meshFilter =
+                newFrame.AddComponent<MeshFilter>();
+
+            meshFilter.mesh = mesh;
+
+            // renderer
+            MeshRenderer renderer =
+                newFrame.AddComponent<MeshRenderer>();
+
+            renderer.material = squareMaterial;
+
+            // rigidbody
+            Rigidbody rb =
+                newFrame.AddComponent<Rigidbody>();
+
+            rb.useGravity = false;
+            rb.isKinematic = true;
+
+            // collider
+            BoxCollider collider =
+                newFrame.AddComponent<BoxCollider>();
+
+            collider.size =
+                mesh.bounds.size;
+
+            collider.center =
+                mesh.bounds.center;
+
+            XRGrabInteractable grabInteractable =
+                newFrame.AddComponent<
+                    XRGrabInteractable>();
+
+            XRGrabInteractable sourceInteractable =
+                triggerSquareGenerator
+                    .GetComponent<XRGrabInteractable>();
+
+            if (sourceInteractable != null)
+            {
+                grabInteractable.interactionLayers =
+                    sourceInteractable.interactionLayers;
+
+                grabInteractable.selectMode =
+                    sourceInteractable.selectMode;
+            }
+
+            grabInteractable.useDynamicAttach = true;
+
+            // grab transformer
+            XRGeneralGrabTransformer
+                grabTransformer =
+                newFrame.AddComponent<
+                    XRGeneralGrabTransformer>();
+
+            //grabTransformer.allowTwoHandedRotation();
         }
 
         currentlyLoadedFile = filename;
