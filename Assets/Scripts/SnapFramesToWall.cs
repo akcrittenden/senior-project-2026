@@ -12,7 +12,8 @@ public class SnapFramesToWall : MonoBehaviour
     private Transform rayStartPoint;
     public float rayLength = 5; //I think this means we need to be closer to the wall for it to snap?
     public MRUKAnchor.SceneLabels labelFilter;
-    private TMPro.TextMeshPro text;
+    [SerializeField] private TMPro.TextMeshPro text;
+    
 
     private string frameTag = "Frame";
 
@@ -41,6 +42,7 @@ public class SnapFramesToWall : MonoBehaviour
             Debug.Log("Can't find ray - " + e.Message);
         }
 
+
     }
 
     // Update is called once per frame
@@ -59,11 +61,10 @@ public class SnapFramesToWall : MonoBehaviour
                 Vector3 hitpoint = hit.point;
                 Vector3 hitNormal = hit.normal;
                 string label = anchor.HasAnyLabel(MRUKAnchor.SceneLabels.WALL_FACE) ? "WALL_FACE" : "UNKNOWN";
-                transform.position = hitpoint;
-                transform.rotation = Quaternion.LookRotation(-hitNormal);
-                //text.transform.position = hitpoint;
-                //text.transform.rotation = Quaternion.LookRotation(-hitNormal);
-                //text.text = "DEBUG: " + label;
+            //gameObject.transform.SetPositionAndRotation(hitpoint, Quaternion.LookRotation(-hitNormal));
+            text.transform.position = hitpoint;
+            text.transform.rotation = Quaternion.LookRotation(-hitNormal);
+            text.text = "DEBUG: " + label;
         }
 
             //bool gripCurrentlyPressed = gripAction.action.IsPressed();
