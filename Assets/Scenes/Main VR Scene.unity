@@ -1320,6 +1320,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: bc1dfd8210e535f4aac71065d3dbb436, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::TriggerSquareGenerator
+  framePrefab: {fileID: 7989984992536090894, guid: f4eb0fb97bc22044cb992370805d852e, type: 3}
   triggerAction: {fileID: 83097790271614945, guid: c348712bda248c246b8c49b3db54643f, type: 3}
   previewMaterial: {fileID: 2100000, guid: 98f784f09e8bcb04492764c0fc9e6503, type: 2}
   squareMaterial: {fileID: 2100000, guid: 47af4b1f30c3cac4a898749270a4a70e, type: 2}

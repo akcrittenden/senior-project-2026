@@ -228,10 +228,14 @@ public class TriggerSquareGenerator : MonoBehaviour
 
     void SpawnCube(Mesh cubeMesh)
     {
-        // Create a new GameObject for this cube
-        GameObject newCube = new GameObject("User Generated Frame");
-        newCube.layer = gameObject.layer;
-        newCube.tag = "Frame"; 
+        //// Create a new GameObject for this cube
+        //GameObject newCube = new GameObject("User Generated Frame");
+        //newCube.layer = gameObject.layer;
+        //newCube.tag = "Frame"; 
+        GameObject newFrame;
+        newFrame = Instantiate(framePrefab);
+        newFrame.layer = gameObject.layer;
+        newFrame.tag = "Frame";
 
         // Instantiate and recenter the mesh so the pivot is at its center
         Mesh newMesh = Instantiate(cubeMesh);
@@ -248,28 +252,29 @@ public class TriggerSquareGenerator : MonoBehaviour
         newMesh.RecalculateNormals();
 
         // Position the object at the world-space center of where the mesh was
-        newCube.transform.rotation = transform.rotation;
-        newCube.transform.position = transform.TransformPoint(meshCenter);
+        framePrefab.transform.rotation = transform.rotation;
+        framePrefab.transform.position = transform.TransformPoint(meshCenter);
+        framePrefab.transform.localScale = transform.localScale;
 
         // Add mesh components
-        MeshFilter meshFilter = newCube.AddComponent<MeshFilter>();
+        MeshFilter meshFilter = newFrame.AddComponent<MeshFilter>();
         meshFilter.mesh = newMesh;
 
-        MeshRenderer newMeshRenderer = newCube.AddComponent<MeshRenderer>();
+        MeshRenderer newMeshRenderer = newFrame.AddComponent<MeshRenderer>();
         newMeshRenderer.material = squareMaterial;
 
         // Add rigidbody first (XRGrabInteractable requires it)
-        Rigidbody newRb = newCube.AddComponent<Rigidbody>();
+        Rigidbody newRb = newFrame.AddComponent<Rigidbody>();
         newRb.useGravity = false;
         newRb.isKinematic = true; // make finished frame not fall to ground
 
         // Add collider and fit to recentered mesh
-        BoxCollider newBoxCollider = newCube.AddComponent<BoxCollider>();
+        BoxCollider newBoxCollider = newFrame.AddComponent<BoxCollider>();
         newBoxCollider.size = newMesh.bounds.size;
         newBoxCollider.center = newMesh.bounds.center;
 
         // Add XRGrabInteractable and match interaction layers to this object's interactable
-        XRGrabInteractable grabInteractable = newCube.AddComponent<XRGrabInteractable>();
+        XRGrabInteractable grabInteractable = newFrame.AddComponent<XRGrabInteractable>();
         XRGrabInteractable sourceInteractable = GetComponent<XRGrabInteractable>();
         if (sourceInteractable != null)
         {
@@ -279,11 +284,11 @@ public class TriggerSquareGenerator : MonoBehaviour
 
         // Fixed attach point on the larger face, rotated 90 degrees
         GameObject attachPoint = new GameObject("Attach Point");
-        attachPoint.transform.SetParent(newCube.transform, false);
+        attachPoint.transform.SetParent(newFrame.transform, false);
         attachPoint.transform.localPosition = new Vector3(0f, newMesh.bounds.extents.y, 0f);
         attachPoint.transform.localRotation = Quaternion.Euler(90f, 0f, 0f);
 
-        XRGeneralGrabTransformer grabTransformer = newCube.AddComponent<XRGeneralGrabTransformer>();
+        XRGeneralGrabTransformer grabTransformer = newFrame.AddComponent<XRGeneralGrabTransformer>();
         XRGeneralGrabTransformer sourceTransformer = GetComponent<XRGeneralGrabTransformer>();
         if (sourceTransformer != null)
         {
@@ -291,11 +296,12 @@ public class TriggerSquareGenerator : MonoBehaviour
                 grabTransformer.allowTwoHandedRotation = sourceTransformer.allowTwoHandedRotation;
             }
         }
-            grabInteractable.attachTransform = attachPoint.transform;
+        
+        grabInteractable.attachTransform = attachPoint.transform;
         // TODO: can't rotate with two hands for some reason
         // TODO: make point the user started with the UP direction and make sure that always faces up
 
-        newCube.AddComponent<SnapFramesToWall>();
+        //newCube.AddComponent<SnapFramesToWall>();
         Debug.Log("Added snap frames script to component I THINK I SHOULD COME FIRST");
 
 

@@ -8,11 +8,10 @@ public class SnapFramesToWall : MonoBehaviour
     // need AR plane probably
     // and maybe arplanelistener?
     // 
-    [SerializeField] private InputActionReference gripAction;
-    [SerializeField] private XRRayInteractor rayInteractor;
-    [SerializeField] private Transform rayStartPoint;
-    [SerializeField] private float rayLength = 5; //I think this means we need to be closer to the wall for it to snap?
-    [SerializeField] private MRUKAnchor.SceneLabels labelFilter;
+    private InputAction gripAction;
+    private Transform rayStartPoint;
+    public float rayLength = 5; //I think this means we need to be closer to the wall for it to snap?
+    public MRUKAnchor.SceneLabels labelFilter;
     private TMPro.TextMeshPro text;
 
     private string frameTag = "Frame";
@@ -20,26 +19,27 @@ public class SnapFramesToWall : MonoBehaviour
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
-        //Debug.Log("Starting SnapFramesToWall script.");
-        ////assign gripAction to XRI Interaction Right Controller's grip action
-        //try
-        //{
-        //    gripAction = InputSystem.actions.FindAction("Select");
-        //}
-        //catch (System.Exception e)
-        //{
-        //    Debug.LogError("Can't find 'Select' action in the Input System." + e.Message);
-        //}
+        XRRayInteractor rayInteractor = FindFirstObjectByType<XRRayInteractor>();
 
-        //try
-        //{
-        //    rayInteractor = GetComponent<XRRayInteractor>();
-        //    rayStartPoint = rayInteractor.transform; // Assuming the ray starts from the interactor's transform
-        //}
-        //catch (System.Exception e)
-        //{
-        //    Debug.Log("Can't find ray" + e.Message);
-        //}
+        Debug.Log("Starting SnapFramesToWall script.");
+        //assign gripAction to XRI Interaction Right Controller's grip action
+        try
+        {
+            gripAction = InputSystem.actions.FindActionMap("XRI Right Interaction").FindAction("Select");
+        }
+        catch (System.Exception e)
+        {
+            Debug.LogError("Can't find 'Select' action in the Input System. " + e.Message);
+        }
+
+        try
+        {
+            rayStartPoint = rayInteractor.transform; // Assuming the ray starts from the interactor's transform
+        }
+        catch (System.Exception e)
+        {
+            Debug.Log("Can't find ray - " + e.Message);
+        }
 
     }
 
@@ -52,18 +52,18 @@ public class SnapFramesToWall : MonoBehaviour
         var wallFilter = new LabelFilter(MRUKAnchor.SceneLabels.WALL_FACE);
         bool hasHit = room.Raycast(ray, rayLength, wallFilter, out RaycastHit hit, out MRUKAnchor anchor);
         // if gripAction is pressed and hasHit and hit.collider is tagged frameTag, then snap the frame to the wall
-        bool gripCurrentlyPressed = gripAction.action.IsPressed();
+        bool gripCurrentlyPressed = gripAction.IsPressed();
 
-            if (hasHit && gripCurrentlyPressed)
+        if (hasHit && gripCurrentlyPressed)
             {
                 Vector3 hitpoint = hit.point;
                 Vector3 hitNormal = hit.normal;
-            string label = anchor.HasAnyLabel(MRUKAnchor.SceneLabels.WALL_FACE) ? "WALL_FACE" : "UNKNOWN";
-            //transform.position = hitpoint;
-            //transform.rotation = Quaternion.LookRotation(-hitNormal);
-            text.transform.position = hitpoint;
-            text.transform.rotation = Quaternion.LookRotation(-hitNormal);
-            text.text = "DEBUG: " + label;
+                string label = anchor.HasAnyLabel(MRUKAnchor.SceneLabels.WALL_FACE) ? "WALL_FACE" : "UNKNOWN";
+                transform.position = hitpoint;
+                transform.rotation = Quaternion.LookRotation(-hitNormal);
+                //text.transform.position = hitpoint;
+                //text.transform.rotation = Quaternion.LookRotation(-hitNormal);
+                //text.text = "DEBUG: " + label;
         }
 
             //bool gripCurrentlyPressed = gripAction.action.IsPressed();
