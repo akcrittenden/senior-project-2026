@@ -228,9 +228,9 @@ public class TriggerSquareGenerator : MonoBehaviour
     void SpawnCube(Mesh cubeMesh)
     {
         // Create a new GameObject for this cube
-        GameObject newCube = new GameObject("User Generated Frame", typeof(SnapFramesToWall));
+        GameObject newCube = new GameObject("User Generated Frame");
         newCube.layer = gameObject.layer;
-        newCube.tag = "Frame";        
+        newCube.tag = "Frame"; 
 
         // Instantiate and recenter the mesh so the pivot is at its center
         Mesh newMesh = Instantiate(cubeMesh);
@@ -294,6 +294,8 @@ public class TriggerSquareGenerator : MonoBehaviour
         // TODO: can't rotate with two hands for some reason
         // TODO: make point the user started with the UP direction and make sure that always faces up
 
+        newCube.AddComponent<SnapFramesToWall>();
+        Debug.Log("Added snap frames script to component I THINK I SHOULD COME FIRST");
 
 
     }
