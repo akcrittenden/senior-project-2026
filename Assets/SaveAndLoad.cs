@@ -406,8 +406,8 @@ public class SaveAndLoad : MonoBehaviour
                 newFrame.AddComponent<
                     XRGeneralGrabTransformer>();
 
-            //grabTransformer.allowTwoHandedRotation();
         }
+        //TODO: this basically does the same as how the frames are spawned in TriggerSquareGenerator. Consider refactoring to avoid code duplication.
 
         currentlyLoadedFile = filename;
         lastLoadedFileTime = File.GetLastWriteTime(filePath);
